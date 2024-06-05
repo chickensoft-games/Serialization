@@ -17,7 +17,7 @@
 
     <Title>Chickensoft.Serialization</Title>
     <Version>0.0.0-devbuild</Version>
-    <Description>System.Text.Json-compatible source generator with automatic support for derived types and polymorphic serialization.</Description>
+    <Description>Easy to use serializable models with AOT compilation support and System.Text.Json compatibility.</Description>
     <Copyright>© 2024 Chickensoft</Copyright>
     <Authors>Chickensoft</Authors>
     <Company>Chickensoft</Company>
