@@ -74,8 +74,9 @@ jobs:
           include: Chickensoft.Serialization/Chickensoft.Serialization.csproj
 
       - name: 📦 Build
-        run: dotnet build \
-          Chickensoft.Serialization/Chickensoft.Serialization.csproj -c Release
+        run: |
+          dotnet build \
+            Chickensoft.Serialization/Chickensoft.Serialization.csproj -c Release
 
       - name: 🔎 Get Package Path
         id: package-path
