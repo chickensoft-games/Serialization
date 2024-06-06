@@ -220,12 +220,9 @@ public abstract partial class LogEntry : SystemLogEntry {
 }
 ```
 
-> [!TIP]
-> Note that the `[Id]` attribute has been moved to `[BaseLogEntry]`.
-
 To introduce a new version, you first need to create a common base type for all the versions.
 
-We first rename the current `LogEntry` to `LogEntry1` and introduce a new abstract type, `LogEntry` which then extends the `SystemLogEntry` type that we don't have direct control over. Then, we simply update the original `LogEntry` model to inherit from `BaseLogEntry`.
+We first rename the current `LogEntry` to `LogEntry1` and introduce a new abstract type which extends `SystemLogEntry` — a type that we don't have direct control over. Then, we simply update the `LogEntry1` model to inherit from the abstract `LogEntry`.
 
 By default, instantiable introspective types have a default version of `1`. We will go ahead and add the `[Version]` attribute anyways to make it more clear.
 
@@ -236,7 +233,7 @@ public abstract partial class LogEntry : SystemLogEntry { }
 
 // Used to be LogEntry, but is now LogEntry1.
 [Meta, Version(1)]
-public partial class LogEntry1 : BaseLogEntry {
+public partial class LogEntry1 : LogEntry {
   [Save("text")]
   public required string Text { get; init; }
 
@@ -244,6 +241,9 @@ public partial class LogEntry1 : BaseLogEntry {
   public required string Type { get; init; }
 }
 ```
+
+> [!TIP]
+> Note that the `[Id]` attribute is only on the abstract base log entry type.
 
 Finally, we can introduce a new version:
 
@@ -255,7 +255,7 @@ public enum LogType {
 }
 
 [Meta, Version(2)]
-public partial class LogEntry2 : BaseLogEntry {
+public partial class LogEntry2 : LogEntry {
   [Save("text")]
   public required string Text { get; init; }
 
@@ -272,10 +272,10 @@ We can update the previous example by marking the first model as outdated:
 
 ```csharp
 [Meta, Id("log_entry")]
-public abstract partial class BaseLogEntry { }
+public abstract partial class LogEntry { }
 
 [Meta, Version(1)]
-public partial class LogEntry : BaseLogEntry, IOutdated {
+public partial class LogEntry1 : LogEntry, IOutdated {
   [Save("text")]
   public required string Text { get; init; }
 
@@ -310,7 +310,7 @@ var options = new JsonSerializerOptions {
   Converters = { new IdentifiableTypeConverter(new Blackboard()) }
 };
 
-var model = JsonSerializer.Deserialize<BaseLogEntry>(json, options);
+var model = JsonSerializer.Deserialize<LogEntry>(json, options);
 ```
 
 ## 🪝 Serialization Hooks
@@ -412,7 +412,7 @@ The serialization system has built-in support for a number of types. If a type i
 [discord-badge]: https://raw.githubusercontent.com/chickensoft-games/chickensoft_site/main/static/img/badges/discord_badge.svg
 [discord]: https://discord.gg/gSjaPgMmYW
 [read-the-docs-badge]: https://raw.githubusercontent.com/chickensoft-games/chickensoft_site/main/static/img/badges/read_the_docs_badge.svg
-[docs]: https://chickensoft.games/docsickensoft%20Discord-%237289DA.svg?style=flat&logo=discord&logoColor=white
+[docs]: https://chickensoft.games/docs
 [line-coverage]: Chickensoft.Serialization.Tests/badges/line_coverage.svg
 [branch-coverage]: Chickensoft.Serialization.Tests/badges/branch_coverage.svg
 
