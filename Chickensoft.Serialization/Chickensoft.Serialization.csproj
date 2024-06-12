@@ -7,7 +7,6 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Nullable>enable</Nullable>
     <CopyAllFiles>true</CopyAllFiles>
-    <RootNamespace>Chickensoft.Serialization</RootNamespace>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <OutputPath>./nupkg</OutputPath>
     <DebugType>portable</DebugType>
@@ -15,14 +14,12 @@
     <!-- Disables most reflection — helps us simulate AOT constraints. -->
     <IlcDisableReflection>true</IlcDisableReflection>
 
-    <Title>Chickensoft.Serialization</Title>
     <Version>0.0.0-devbuild</Version>
     <Description>Easy to use serializable models with AOT compilation support and System.Text.Json compatibility.</Description>
     <Copyright>© 2024 Chickensoft</Copyright>
     <Authors>Chickensoft</Authors>
     <Company>Chickensoft</Company>
 
-    <PackageId>Chickensoft.Serialization</PackageId>
     <PackageReleaseNotes>Serialization release.</PackageReleaseNotes>
     <PackageIcon>icon.png</PackageIcon>
     <PackageTags>serialization;system.text.json;stj;source generator;tools;generator;utilities;state management;state machine;chickensoft</PackageTags>

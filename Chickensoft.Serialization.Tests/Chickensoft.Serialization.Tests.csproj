@@ -4,8 +4,6 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <RootNamespace>Chickensoft.Serialization.Tests</RootNamespace>
-
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     <LangVersion>preview</LangVersion>
