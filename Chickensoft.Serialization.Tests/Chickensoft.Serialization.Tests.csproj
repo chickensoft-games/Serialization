@@ -2,14 +2,11 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
-    <Nullable>enable</Nullable>
 
     <RootNamespace>Chickensoft.Serialization.Tests</RootNamespace>
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <LangVersion>preview</LangVersion>
-    <DebugType>portable</DebugType>
 
     <!-- Disable JSON Reflection. We don't want any help. Everything has to work in AOT and reflection-free mode. -->
     <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>

@@ -2,15 +2,12 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
-    <LangVersion>preview</LangVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Nullable>enable</Nullable>
     <CopyAllFiles>true</CopyAllFiles>
     <RootNamespace>Chickensoft.Serialization</RootNamespace>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <OutputPath>./nupkg</OutputPath>
-    <DebugType>portable</DebugType>
 
     <!-- Disables most reflection — helps us simulate AOT constraints. -->
     <IlcDisableReflection>true</IlcDisableReflection>
