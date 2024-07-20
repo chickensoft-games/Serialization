@@ -133,8 +133,8 @@ public class SerializableBlackboard : Blackboard, ISerializableBlackboard {
 
     // If it is a persisted type that isn't on the blackboard yet, we can
     // create an instance of the data and add it.
-    if (_saveTypes.ContainsKey(type)) {
-      data = _saveTypes[type]();
+    if (_saveTypes.TryGetValue(type, out var saveType)) {
+      data = saveType();
       _blackboard[type] = data;
       return data;
     }
