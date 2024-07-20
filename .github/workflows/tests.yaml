@@ -27,7 +27,6 @@ jobs:
       - name: 🧾 Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GH_BASIC }}
           lfs: true
           submodules: "recursive"
 
