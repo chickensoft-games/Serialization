@@ -68,6 +68,7 @@ public class MixAndMatchTest {
     var campCounselorAgain =
       JsonSerializer.Deserialize<CampCounselor>(json, options);
 
+    campCounselorAgain.ShouldNotBeNull();
     campCounselorAgain.ShouldDeepEqual(campCounselor);
   }
 
@@ -133,6 +134,7 @@ public class MixAndMatchTest {
     var campInstructorAgain =
       JsonSerializer.Deserialize<CampInstructor>(json, options);
 
+    campInstructorAgain.ShouldNotBeNull();
     campInstructorAgain.ShouldDeepEqual(campInstructor);
   }
 }

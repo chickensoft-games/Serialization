@@ -111,10 +111,34 @@ JsonConverter<object>, ISerializableTypeConverter {
 
       object? propertyValue = null;
 
+      var propertyType = property.GenericType.ClosedType;
+
       if (isPresentInJson) {
+        // Peek at the type of the property's value to see if it's more
+        // specific than the type in the metadata (i.e., a derived type).
+        // This allows us to support concrete implementations of declared types
+        // for properties that are interfaces or abstract classes.
+
+        if (
+          propertyValueJsonNode is JsonObject propertyJsonObj &&
+          propertyValueJsonNode[TypeDiscriminator]?.ToString()
+            is { } propertyTypeId &&
+          Graph.GetIdentifiableType(propertyTypeId) is { } idType
+        ) {
+          // Peeking a property value's type only works if the property value
+          // is a non-null object and it actually has a type discriminator.
+          // Types with System.Text.Json generated metadata won't necessarily
+          // have type discriminators or may have a different field name for the
+          // type discriminator, ensuring those will still be handled by STJ
+          // itself.
+          //
+          // Update known type to be the more specific type.
+          propertyType = idType;
+        }
+
         propertyValue = JsonSerializer.Deserialize(
           propertyValueJsonNode,
-          property.GenericType.ClosedType,
+          propertyType,
           options
         );
       }
@@ -136,7 +160,7 @@ JsonConverter<object>, ISerializableTypeConverter {
         var typeInfo =
           options
             .TypeInfoResolver!
-            .GetTypeInfo(property.GenericType.ClosedType, options)!;
+            .GetTypeInfo(propertyType, options)!;
 
         // Our type resolver companion will have cached the closed type of
         // the collection type by using the callbacks provided in the generated
@@ -223,7 +247,17 @@ JsonConverter<object>, ISerializableTypeConverter {
       );
 
       var propertyValue = property.Getter(value);
+      var valueType = propertyValue?.GetType();
       var propertyType = property.GenericType.ClosedType;
+
+      if (
+        valueType is { } &&
+        options.TypeInfoResolver!.GetTypeInfo(valueType, options) is { }
+      ) {
+        // The actual instance type is a known serializable type, so we assume
+        // it is more specific than the declared property type. Use it instead.
+        propertyType = valueType;
+      }
 
       json[propertyId] = JsonSerializer.SerializeToNode(
         value: propertyValue,

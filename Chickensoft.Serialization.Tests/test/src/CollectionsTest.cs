@@ -134,6 +134,7 @@ public partial class CollectionsTest {
 
     var bookAgain = JsonSerializer.Deserialize<Book>(json, options);
 
+    bookAgain.ShouldNotBeNull();
     bookAgain.ShouldDeepEqual(book);
   }
 
@@ -241,6 +242,7 @@ public partial class CollectionsTest {
 
     var bookcaseAgain = JsonSerializer.Deserialize<Bookcase>(json, options);
 
+    bookcaseAgain.ShouldNotBeNull();
     bookcaseAgain.ShouldDeepEqual(bookcase);
   }
 }
