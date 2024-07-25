@@ -85,7 +85,6 @@ Annoyingly, `System.Text.Json` requires you to tag derived types on the generati
 - ❌ Models must have parameterless constructors.
 - ❌ Serializable types must be partial.
 - ❌ Only collections supported are `HashSet<T>`, `List<T>`, and `Dictionary<TKey, TValue>`.
-- ❌ Referencing types by an interface is not supported.
 
 The Chickensoft serializer has strong opinions about how JSON serialization should be done. It's primarily intended to simplify the process of defining models for game save files, but you can use it any C# project which supports C# >= 11.
 
@@ -193,9 +192,6 @@ public partial class Lawyer : Person {
   public required int CasesWon { get; init; }  
 }
 ```
-
-> [!CAUTION]
-> A serializable property cannot refer to a type by an interface.
 
 ## ⏳ Versioning
 
