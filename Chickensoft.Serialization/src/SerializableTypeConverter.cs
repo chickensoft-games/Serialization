@@ -232,6 +232,11 @@ JsonConverter<object>, ISerializableTypeConverter {
     var properties = Graph.GetProperties(type);
 
     foreach (var property in properties) {
+      if (property.Getter is not { } getter) {
+        // Property cannot be read, only set.
+        continue;
+      }
+
       if (GetPropertyId(property) is not { } propertyId) {
         // Only write properties marked with the [Save] attribute.
         continue;
@@ -246,7 +251,7 @@ JsonConverter<object>, ISerializableTypeConverter {
         options
       );
 
-      var propertyValue = property.Getter(value);
+      var propertyValue = getter(value);
       var valueType = propertyValue?.GetType();
       var propertyType = property.GenericType.ClosedType;
 
