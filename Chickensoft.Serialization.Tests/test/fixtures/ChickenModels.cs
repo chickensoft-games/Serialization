@@ -15,6 +15,9 @@ public partial record Person {
 
   // Shouldn't be saved since no [Save] attribute is present.
   public bool Valid { get; set; } = true;
+
+  // Shouldn't even be attempted to be saved since it cannot be read.
+  public string Strength { set { } }
 }
 
 public enum PetType {
