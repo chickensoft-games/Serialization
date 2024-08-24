@@ -90,6 +90,7 @@ JsonConverter<object>, ISerializableTypeConverter {
     var value = hasInitProps ? null : metadata.Factory();
 
     var initProps = hasInitProps ? new Dictionary<string, object?>() : null;
+    var normalProps = hasInitProps ? new List<Action>() : null;
 
     foreach (var property in properties) {
       if (GetPropertyId(property) is not { } propertyId) {
@@ -143,12 +144,16 @@ JsonConverter<object>, ISerializableTypeConverter {
         );
       }
 
+      var shouldSet = isPresentInJson;
+
       if (
         !isPresentInJson &&
-        propertyValue is null &&
-        IsCollection(property.GenericType.OpenType)
+        IsCollection(property.GenericType.OpenType) &&
+        !property.HasDefaultValue
       ) {
-        // The value of this collection property is missing from the json.
+        // Property is not in the json, but it's a collection value that doesn't
+        // have a default value in the model.
+        //
         // In this scenario, we actually prefer an empty collection. We only
         // deserialize a collection to null if it doesn't have a setter or
         // if it's present in the json *and* explicitly set to null.
@@ -166,14 +171,29 @@ JsonConverter<object>, ISerializableTypeConverter {
         // the collection type by using the callbacks provided in the generated
         // introspection data, which is AOT-friendly :D
         propertyValue = typeInfo.CreateObject!();
+
+        // We want to set the property to the empty collection.
+        shouldSet = true;
+      }
+
+      if (!shouldSet) {
+        continue;
       }
 
       if (hasInitProps) {
-        // We'll construct the object later.
-        initProps!.Add(property.Name, propertyValue);
+        // Init properties require us to set properties later, so we save
+        // the init prop values to use in the generated metadata constructor.
+        //
+        // We also save closures which will set the normal properties, too.
+        if (property.IsInit) {
+          initProps!.Add(property.Name, propertyValue);
+        }
+        else if (property.Setter is { } propertySetter) {
+          normalProps!.Add(() => propertySetter(value!, propertyValue));
+        }
       }
       else if (property.Setter is { } propertySetter) {
-        // We can set the property right away.
+        // We can set the property immediately since there are no init props.
         propertySetter(value!, propertyValue);
       }
     }
@@ -182,6 +202,12 @@ JsonConverter<object>, ISerializableTypeConverter {
     // init properties.
     if (hasInitProps) {
       value = metadata.Metatype.Construct(initProps);
+
+      // Set other properties that are not init properties now that we have
+      // an object.
+      foreach (var setProp in normalProps!) {
+        setProp();
+      }
     }
 
     // Upgrade the deserialized object as needed.
