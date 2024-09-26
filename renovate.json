@@ -5,7 +5,6 @@
     ":semanticCommits"
   ],
   "prHourlyLimit": 2,
-  "versioning": "loose",
   "packageRules": [
     {
       "matchPackagePatterns": [
@@ -13,14 +12,12 @@
       ],
       "groupName": "all dependencies",
       "groupSlug": "all-deps",
-      "automerge": true,
-      "allowedVersions": "!/preview/"
+      "automerge": true
     },
     {
       "matchPackagePrefixes": [
         "dotnet-sdk"
-      ],
-      "allowedVersions": "!/preview/"
+      ]
     },
     {
       "matchPackagePrefixes": [
