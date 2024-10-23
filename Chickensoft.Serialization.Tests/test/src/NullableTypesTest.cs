@@ -24,7 +24,12 @@ public class NullableValueTypesTest {
       NullableBool = true,
       NullableInt = 42,
       NullableString = "a",
-      NullableValue = new MyValueType("My Value", null)
+      NullableValue = new MyValueType("My Value", null),
+      NullableValueList = [
+        new MyValueType("Value 1", 1),
+        new MyValueType("Value 2", 2),
+      ],
+      NullableIntList = [1, null, 3],
     };
 
     var json = JsonSerializer.Serialize(model, _options);
@@ -37,11 +42,26 @@ public class NullableValueTypesTest {
         "$v": 1,
         "nullable_bool": true,
         "nullable_int": 42,
+        "nullable_int_list": [
+          1,
+          null,
+          3
+        ],
         "nullable_string": "a",
         "nullable_value": {
           "Name": "My Value",
           "OptionalInt": null
-        }
+        },
+        "nullable_value_list": [
+          {
+            "Name": "Value 1",
+            "OptionalInt": 1
+          },
+          {
+            "Name": "Value 2",
+            "OptionalInt": 2
+          }
+        ]
       }
       """,
       StringCompareShould.IgnoreLineEndings
@@ -60,7 +80,10 @@ public class NullableValueTypesTest {
 
   [Fact]
   public void SerializationRoundTripWithoutValues() {
-    var model = new NullableValueTypes();
+    var model = new NullableValueTypes() {
+      NullableValueList = [null, new MyValueType("Value 2", 2)],
+      NullableIntList = [1, null, 2],
+    };
 
     var json = JsonSerializer.Serialize(model, _options);
 
@@ -72,8 +95,20 @@ public class NullableValueTypesTest {
         "$v": 1,
         "nullable_bool": null,
         "nullable_int": null,
+        "nullable_int_list": [
+          1,
+          null,
+          2
+        ],
         "nullable_string": null,
-        "nullable_value": null
+        "nullable_value": null,
+        "nullable_value_list": [
+          null,
+          {
+            "Name": "Value 2",
+            "OptionalInt": 2
+          }
+        ]
       }
       """,
       StringCompareShould.IgnoreLineEndings
@@ -86,5 +121,11 @@ public class NullableValueTypesTest {
     deserialized.NullableBool.HasValue.ShouldBeFalse();
     deserialized.NullableString.ShouldBeNull();
     deserialized.NullableValue.ShouldBeNull();
+    deserialized.NullableValueList.ShouldNotBeNull();
+    deserialized.NullableValueList!.Count.ShouldBe(2);
+    deserialized.NullableValueList[0].ShouldBeNull();
+    deserialized.NullableValueList[1].ShouldNotBeNull();
+    deserialized.NullableValueList[1]!.Value.Name.ShouldBe("Value 2");
+    deserialized.NullableValueList[1]!.Value.OptionalInt.ShouldBe(2);
   }
 }
