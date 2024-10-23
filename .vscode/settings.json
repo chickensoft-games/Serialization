@@ -14,7 +14,6 @@
   // Required to keep the C# language server from getting confused about which
   // solution to open.
   "dotnet.defaultSolution": "Chickensoft.Serialization.sln",
-  "dotnet.server.useOmnisharp": false,
   "editor.semanticHighlighting.enabled": true,
   // C# doc comment colorization gets lost with semantic highlighting, but we
   // need semantic highlighting for proper syntax highlighting with record

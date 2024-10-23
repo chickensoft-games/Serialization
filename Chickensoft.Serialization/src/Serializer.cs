@@ -47,6 +47,10 @@ public static class Serializer {
       JsonMetadataServices.CreateValueInfo<bool>(
         options, JsonMetadataServices.BooleanConverter
       ),
+    [typeof(bool?)] = (options) =>
+      JsonMetadataServices.CreateValueInfo<bool?>(
+        options, JsonMetadataServices.GetNullableConverter<bool>(options)
+      ),
     [typeof(byte[])] = (options) =>
       JsonMetadataServices.CreateValueInfo<byte[]>(
         options, JsonMetadataServices.ByteArrayConverter
@@ -55,41 +59,83 @@ public static class Serializer {
       JsonMetadataServices.CreateValueInfo<byte>(
         options, JsonMetadataServices.ByteConverter
       ),
+    [typeof(byte?)] = (options) =>
+      JsonMetadataServices.CreateValueInfo<byte?>(
+        options, JsonMetadataServices.GetNullableConverter<byte>(options)
+      ),
     [typeof(char)] = (options) =>
       JsonMetadataServices.CreateValueInfo<char>(
         options, JsonMetadataServices.CharConverter
+      ),
+    [typeof(char?)] = (options) =>
+      JsonMetadataServices.CreateValueInfo<char?>(
+        options, JsonMetadataServices.GetNullableConverter<char>(options)
       ),
     [typeof(DateTime)] = (options) =>
       JsonMetadataServices.CreateValueInfo<DateTime>(
         options, JsonMetadataServices.DateTimeConverter
       ),
+    [typeof(DateTime?)] = (options) =>
+      JsonMetadataServices.CreateValueInfo<DateTime?>(
+        options, JsonMetadataServices.GetNullableConverter<DateTime>(options)
+      ),
     [typeof(DateTimeOffset)] = (options) =>
       JsonMetadataServices.CreateValueInfo<DateTimeOffset>(
         options, JsonMetadataServices.DateTimeOffsetConverter
+      ),
+    [typeof(DateTimeOffset?)] = (options) =>
+      JsonMetadataServices.CreateValueInfo<DateTimeOffset?>(
+        options, JsonMetadataServices.GetNullableConverter<DateTimeOffset>(
+          options
+        )
       ),
     [typeof(decimal)] = (options) =>
       JsonMetadataServices.CreateValueInfo<decimal>(
         options, JsonMetadataServices.DecimalConverter
       ),
+    [typeof(decimal?)] = (options) =>
+      JsonMetadataServices.CreateValueInfo<decimal?>(
+        options, JsonMetadataServices.GetNullableConverter<decimal>(options)
+      ),
     [typeof(double)] = (options) =>
       JsonMetadataServices.CreateValueInfo<double>(
         options, JsonMetadataServices.DoubleConverter
+      ),
+    [typeof(double?)] = (options) =>
+      JsonMetadataServices.CreateValueInfo<double?>(
+        options, JsonMetadataServices.GetNullableConverter<double>(options)
       ),
     [typeof(Guid)] = (options) =>
       JsonMetadataServices.CreateValueInfo<Guid>(
         options, JsonMetadataServices.GuidConverter
       ),
+    [typeof(Guid?)] = (options) =>
+      JsonMetadataServices.CreateValueInfo<Guid?>(
+        options, JsonMetadataServices.GetNullableConverter<Guid>(options)
+      ),
     [typeof(short)] = (options) =>
       JsonMetadataServices.CreateValueInfo<short>(
         options, JsonMetadataServices.Int16Converter
+      ),
+    [typeof(short?)] = (options) =>
+      JsonMetadataServices.CreateValueInfo<short?>(
+        options, JsonMetadataServices.GetNullableConverter<short>(options)
       ),
     [typeof(int)] = (options) =>
       JsonMetadataServices.CreateValueInfo<int>(
         options, JsonMetadataServices.Int32Converter
       ),
+    [typeof(int?)] = (options) =>
+      JsonMetadataServices.CreateValueInfo<int?>(
+        options, JsonMetadataServices.GetNullableConverter<int>(options)
+      ),
     [typeof(long)] = (options) =>
       JsonMetadataServices.CreateValueInfo<long>(
         options, JsonMetadataServices.Int64Converter
+      ),
+    [typeof(long?)] = (options) =>
+      JsonMetadataServices.CreateValueInfo<long?>(
+        options, JsonMetadataServices.GetNullableConverter<long>(options)
       ),
     [typeof(JsonArray)] = (options) =>
       JsonMetadataServices.CreateValueInfo<JsonArray>(
@@ -119,6 +165,12 @@ public static class Serializer {
       JsonMetadataServices.CreateValueInfo<Memory<byte>>(
         options, JsonMetadataServices.MemoryByteConverter
       ),
+    [typeof(Memory<byte>?)] = (options) =>
+      JsonMetadataServices.CreateValueInfo<Memory<byte>?>(
+        options, JsonMetadataServices.GetNullableConverter<Memory<byte>>(
+          options
+        )
+      ),
     [typeof(object)] = (options) =>
       JsonMetadataServices.CreateValueInfo<object>(
         options, JsonMetadataServices.ObjectConverter
@@ -127,13 +179,28 @@ public static class Serializer {
       JsonMetadataServices.CreateValueInfo<ReadOnlyMemory<byte>>(
         options, JsonMetadataServices.ReadOnlyMemoryByteConverter
       ),
+    [typeof(ReadOnlyMemory<byte>?)] = (options) =>
+      JsonMetadataServices.CreateValueInfo<ReadOnlyMemory<byte>?>(
+        options,
+        JsonMetadataServices.GetNullableConverter<ReadOnlyMemory<byte>>(
+          options
+        )
+      ),
     [typeof(sbyte)] = (options) =>
       JsonMetadataServices.CreateValueInfo<sbyte>(
         options, JsonMetadataServices.SByteConverter
       ),
+    [typeof(sbyte?)] = (options) =>
+      JsonMetadataServices.CreateValueInfo<sbyte?>(
+        options, JsonMetadataServices.GetNullableConverter<sbyte>(options)
+      ),
     [typeof(float)] = (options) =>
       JsonMetadataServices.CreateValueInfo<float>(
         options, JsonMetadataServices.SingleConverter
+      ),
+    [typeof(float?)] = (options) =>
+      JsonMetadataServices.CreateValueInfo<float?>(
+        options, JsonMetadataServices.GetNullableConverter<float>(options)
       ),
     [typeof(string)] = (options) =>
       JsonMetadataServices.CreateValueInfo<string>(
@@ -143,17 +210,33 @@ public static class Serializer {
       JsonMetadataServices.CreateValueInfo<TimeSpan>(
         options, JsonMetadataServices.TimeSpanConverter
       ),
+    [typeof(TimeSpan?)] = (options) =>
+      JsonMetadataServices.CreateValueInfo<TimeSpan?>(
+        options, JsonMetadataServices.GetNullableConverter<TimeSpan>(options)
+      ),
     [typeof(ushort)] = (options) =>
       JsonMetadataServices.CreateValueInfo<ushort>(
         options, JsonMetadataServices.UInt16Converter
+      ),
+    [typeof(ushort?)] = (options) =>
+      JsonMetadataServices.CreateValueInfo<ushort?>(
+        options, JsonMetadataServices.GetNullableConverter<ushort>(options)
       ),
     [typeof(uint)] = (options) =>
       JsonMetadataServices.CreateValueInfo<uint>(
         options, JsonMetadataServices.UInt32Converter
       ),
+    [typeof(uint?)] = (options) =>
+      JsonMetadataServices.CreateValueInfo<uint?>(
+        options, JsonMetadataServices.GetNullableConverter<uint>(options)
+      ),
     [typeof(ulong)] = (options) =>
       JsonMetadataServices.CreateValueInfo<ulong>(
         options, JsonMetadataServices.UInt64Converter
+      ),
+    [typeof(ulong?)] = (options) =>
+      JsonMetadataServices.CreateValueInfo<ulong?>(
+        options, JsonMetadataServices.GetNullableConverter<ulong>(options)
       ),
     [typeof(Uri)] = (options) =>
       JsonMetadataServices.CreateValueInfo<Uri>(
@@ -165,8 +248,14 @@ public static class Serializer {
       )
   };
 
+  internal static bool _isInitialized;
+
   [ModuleInitializer]
   internal static void Initialize() {
+    if (_isInitialized) {
+      return;
+    }
+
     Types.Graph.AddCustomType(
       type: typeof(SerializableBlackboard),
       name: "SerializableBlackboard",
@@ -175,6 +264,8 @@ public static class Serializer {
       id: "blackboard",
       version: 1
     );
+
+    _isInitialized = true;
 
     return;
   }
@@ -290,7 +381,7 @@ public static class Serializer {
   /// <param name="resolver">Originating type resolver, if any.</param>
   /// <param name="options">Serialization options.</param>
   public static void IdentifyCollectionTypes(
-    GenericType genericType,
+    TypeNode genericType,
     IJsonTypeInfoResolver? resolver,
     JsonSerializerOptions options
   ) {

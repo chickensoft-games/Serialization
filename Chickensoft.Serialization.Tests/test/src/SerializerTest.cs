@@ -2,17 +2,26 @@ namespace Chickensoft.Serialization.Tests;
 
 using System;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using Chickensoft.Serialization.Tests.Fixtures;
 using Shouldly;
 using Xunit;
 
 public partial class SerializationTest {
+  private readonly JsonSerializerOptions _options = new() {
+    WriteIndented = true,
+    TypeInfoResolver = JsonTypeInfoResolver.Combine(
+    new SerializableTypeResolver()
+  ),
+    Converters = {
+      new SerializableTypeConverter()
+    },
+  };
+
   [Fact]
   public void ExpandsConverter() {
-    var options = new JsonSerializerOptions { };
-
     var converter = Serializer.ExpandConverter(
-      typeof(string), new MyConverterFactory(), options
+      typeof(string), new MyConverterFactory(), _options
     );
 
     converter.ShouldNotBeNull();
@@ -20,22 +29,20 @@ public partial class SerializationTest {
 
   [Fact]
   public void ExpandConverterThrowsIfAnotherFactoryIsFound() {
-    var options = new JsonSerializerOptions { };
-
     Should.Throw<InvalidOperationException>(() =>
       Serializer.ExpandConverter(
-        typeof(string), new BadConverterFactory(), options
+        typeof(string), new BadConverterFactory(), _options
       )
     );
   }
 
   [Fact]
   public void BuiltInConverterFactories() {
-    var options = new JsonSerializerOptions { };
     foreach (
-      var converterFactory in Serializer.BuiltInConverterFactories.Values
+      var converterFactory in Serializer.BuiltInConverterFactories
     ) {
-      converterFactory(options).ShouldNotBeNull();
+      var converter = converterFactory.Value(_options);
+      converter.ShouldNotBeNull();
     }
   }
 }

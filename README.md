@@ -309,6 +309,52 @@ var options = new JsonSerializerOptions {
 var model = JsonSerializer.Deserialize<LogEntry>(json, options);
 ```
 
+## 📋 Enums
+
+You can use enums inside your models. If you're intending to target ahead-of-time compilation, you'll also need to create a System.Text.Json context to register your enum types on so it can generate the relevant serialization metadata needed to serialize and deserialize your enum type.
+
+```csharp
+public enum ModelType {
+  Basic,
+  Advanced,
+  Complex
+}
+
+// Register the enum on a System.Text.Json context so it will get metadata
+// generated for it.
+[JsonSerializable(typeof(ModelType))]
+// [JsonSerializable(typeof(AnotherEnum))] // you can have as many as you want
+public partial class ModelWithEnumContext : JsonSerializerContext;
+
+[Meta, Id("model_with_enum")]
+public partial record ModelWithEnum {
+  // Use the enum type in your model, same as with any other type
+  [Save("c_type")]
+  public ModelType CType { get; init; }
+}
+```
+
+Elsewhere, you will need to add your vanilla System.Text.Json context to your serialization options, along with the Chickensoft type resolver and converter.
+
+```csharp
+var options = new JsonSerializerOptions {
+  WriteIndented = true,
+  TypeInfoResolver = JsonTypeInfoResolver.Combine(
+    // Vanilla System.Text.Json context that has the enum registered
+    ModelWithEnumContext.Default,
+    // Chickensoft type resolver
+    new SerializableTypeResolver() 
+  ),
+  Converters = {
+    // You'll need to specify a converter for your enum — there's also
+    // JsonNumberEnumConverter<TEnum>
+    new JsonStringEnumConverter<ModelType>(),
+    // Chickensoft type converter
+    new SerializableTypeConverter()
+  },
+};
+```
+
 ## 🪝 Serialization Hooks
 
 Types can implement `ICustomSerializable` to customize how they are serialized and deserialized.
@@ -367,6 +413,8 @@ The serialization system has built-in support for a number of types. If a type i
 - `Dictionary<TKey, TValue>`
 
 ### 🧰 Basic Types
+
+The following basic types and their nullable counterparts are supported:
 
 - `bool`
 - `byte[]`
