@@ -23,6 +23,19 @@ public interface ISerializableTypeConverter {
 /// <inheritdoc />
 public class SerializableTypeConverter :
 JsonConverter<object>, ISerializableTypeConverter {
+
+  private class NullableTypeReceiver : ITypeReceiver {
+    public Type NullableType { get; private set; } = default!;
+
+    // silly, but works for both reference and value types amazingly
+    public void Receive<T>() {
+      NullableType = typeof(T);
+    }
+  }
+
+  [ThreadStatic]
+  private static NullableTypeReceiver _nullTypeMaker = default!;
+
   /// <inheritdoc />
   public IReadOnlyBlackboard DependenciesBlackboard { get; }
 
@@ -54,6 +67,8 @@ JsonConverter<object>, ISerializableTypeConverter {
     Type typeToConvert,
     JsonSerializerOptions options
   ) {
+    _nullTypeMaker ??= new NullableTypeReceiver();
+
     var json = JsonNode.Parse(ref reader)?.AsObject() ?? throw new JsonException(
       $"Failed to parse JSON for introspective type {typeToConvert}."
     );
@@ -102,7 +117,7 @@ JsonConverter<object>, ISerializableTypeConverter {
       // cached the closed type of the collection type (recursively) before
       // trying to deserialize it.
       Serializer.IdentifyCollectionTypes(
-        property.GenericType,
+        property.TypeNode,
         options.TypeInfoResolver,
         options
       );
@@ -112,7 +127,7 @@ JsonConverter<object>, ISerializableTypeConverter {
 
       object? propertyValue = null;
 
-      var propertyType = property.GenericType.ClosedType;
+      var propertyType = property.TypeNode.ClosedType;
 
       if (isPresentInJson) {
         // Peek at the type of the property's value to see if it's more
@@ -137,6 +152,12 @@ JsonConverter<object>, ISerializableTypeConverter {
           propertyType = idType;
         }
 
+        if (propertyType.IsValueType && property.TypeNode.IsNullable) {
+          // nullable value types
+          property.TypeNode.GenericTypeGetter(_nullTypeMaker);
+          propertyType = _nullTypeMaker.NullableType!;
+        }
+
         propertyValue = JsonSerializer.Deserialize(
           propertyValueJsonNode,
           propertyType,
@@ -148,7 +169,7 @@ JsonConverter<object>, ISerializableTypeConverter {
 
       if (
         !isPresentInJson &&
-        IsCollection(property.GenericType.OpenType) &&
+        IsCollection(property.TypeNode.OpenType) &&
         !property.HasDefaultValue
       ) {
         // Property is not in the json, but it's a collection value that doesn't
@@ -233,6 +254,8 @@ JsonConverter<object>, ISerializableTypeConverter {
     object value,
     JsonSerializerOptions options
   ) {
+    _nullTypeMaker ??= new NullableTypeReceiver();
+
     var type = value.GetType();
 
     var json = new JsonObject();
@@ -272,14 +295,14 @@ JsonConverter<object>, ISerializableTypeConverter {
       // cached the closed type of the collection type (recursively) before
       // trying to serialize it.
       Serializer.IdentifyCollectionTypes(
-        property.GenericType,
+        property.TypeNode,
         options.TypeInfoResolver,
         options
       );
 
       var propertyValue = getter(value);
       var valueType = propertyValue?.GetType();
-      var propertyType = property.GenericType.ClosedType;
+      var propertyType = property.TypeNode.ClosedType;
 
       if (
         valueType is { } &&
@@ -288,6 +311,12 @@ JsonConverter<object>, ISerializableTypeConverter {
         // The actual instance type is a known serializable type, so we assume
         // it is more specific than the declared property type. Use it instead.
         propertyType = valueType;
+      }
+
+      if (propertyType.IsValueType && property.TypeNode.IsNullable) {
+        // nullable value types
+        property.TypeNode.GenericTypeGetter(_nullTypeMaker);
+        propertyType = _nullTypeMaker.NullableType!;
       }
 
       json[propertyId] = JsonSerializer.SerializeToNode(
