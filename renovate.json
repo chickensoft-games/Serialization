@@ -16,7 +16,7 @@
     },
     {
       "matchPackageNames": [
-        "dotnet-sdk{/,}**"
+        "dotnet-sdk"
       ],
       "allowedVersions": "<9"
     },
