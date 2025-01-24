@@ -50,7 +50,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Chickensoft.Collections" Version="1.12.9" />
+    <PackageReference Include="Chickensoft.Collections" Version="1.12.10" />
     <PackageReference Include="System.Text.Json" Version="9.0.1" />
     <PackageReference Include="Chickensoft.Introspection" Version="2.2.0" />
     <PackageReference Include="PolyKit" Version="3.0.9" />
