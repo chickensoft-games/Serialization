@@ -46,17 +46,19 @@ public partial class CustomSerializableTest {
     };
 
     var json = JsonSerializer.Serialize(customSerializable, options);
+    var jsonNode = JsonNode.Parse(json);
 
-    json.ShouldBe(
-      /*lang=json,strict*/
+    var expectedJson = /*lang=json,strict*/
       """
       {
         "$type": "custom_serializable",
         "$v": 1,
         "value": 42
       }
-      """
-    );
+      """;
+    var expectedJsonNode = JsonNode.Parse(expectedJson);
+
+    JsonNode.DeepEquals(jsonNode, expectedJsonNode).ShouldBeTrue();
   }
 
   [Fact]
@@ -77,7 +79,7 @@ public partial class CustomSerializableTest {
       Converters = { new SerializableTypeConverter(new Blackboard()) }
     };
 
-    var customSerializable = JsonSerializer.Deserialize<CustomSerializable>(json, options);
+    var customSerializable = json.Deserialize<CustomSerializable>(options);
 
     customSerializable.ShouldNotBeNull().Value.ShouldBe(42);
   }
