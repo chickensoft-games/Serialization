@@ -3,6 +3,7 @@ namespace Chickensoft.Serialization.Tests;
 using System.Collections.Generic;
 using System.Data;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Chickensoft.Collections;
 using Chickensoft.Introspection;
 using Shouldly;
@@ -113,9 +114,9 @@ public partial class SerializableBlackboardTest {
     blackboard.Save(() => obj);
 
     var json = JsonSerializer.Serialize(blackboard, options);
+    var jsonNode = JsonNode.Parse(json);
 
-    json.ShouldBe(
-      /*lang=json,strict*/
+    var expectedJson = /*lang=json,strict*/
       """
       {
         "$type": "blackboard",
@@ -128,8 +129,10 @@ public partial class SerializableBlackboardTest {
           }
         }
       }
-      """
-    );
+      """;
+    var expectedJsonNode = JsonNode.Parse(expectedJson);
+
+    JsonNode.DeepEquals(jsonNode, expectedJsonNode).ShouldBeTrue();
 
     var deserialized = JsonSerializer.Deserialize<SerializableBlackboard>(
       json,
