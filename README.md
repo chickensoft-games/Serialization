@@ -106,6 +106,19 @@ Make sure you get the latest versions of the packages here on nuget: [Chickensof
 ```
 
 > [!WARNING]
+> We strongly recommend treating warning `CS9057` as an error to catch possible compiler-mismatch issues with the Introspection generator. (See the [Introspection] README for more details.) To do so, add a `WarningsAsErrors` line to your `.csproj` file's `PropertyGroup`:
+>
+> ```xml
+> <PropertyGroup>
+>   <TargetFramework>net8.0</TargetFramework>
+>   ...
+>   <!-- Catch compiler-mismatch issues with the Introspection generator -->
+>   <WarningsAsErrors>CS9057</WarningsAsErrors>
+>   ...
+> </PropertyGroup>
+> ```
+
+> [!WARNING]
 > Don't forget the `PrivateAssets="all" OutputItemType="analyzer"` when including a source generator package in your project.
 
 ## 💾 Serializable Types
@@ -155,7 +168,7 @@ public partial class Model {
   public required string Name { get; init; } // required allows it to be non-nullable
 
   [Save("description")]
-  public string? Description { get; init; } // not required, should be nullable 
+  public string? Description { get; init; } // not required, should be nullable
 }
 ```
 
@@ -189,7 +202,7 @@ public partial class Doctor : Person {
 [Meta, Id("lawyer")]
 public partial class Lawyer : Person {
   [Save("cases_won")]
-  public required int CasesWon { get; init; }  
+  public required int CasesWon { get; init; }
 }
 ```
 
@@ -343,7 +356,7 @@ var options = new JsonSerializerOptions {
     // Vanilla System.Text.Json context that has the enum registered
     ModelWithEnumContext.Default,
     // Chickensoft type resolver
-    new SerializableTypeResolver() 
+    new SerializableTypeResolver()
   ),
   Converters = {
     // You'll need to specify a converter for your enum — there's also
