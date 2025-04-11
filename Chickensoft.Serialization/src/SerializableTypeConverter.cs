@@ -1,12 +1,12 @@
 namespace Chickensoft.Serialization;
 
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Chickensoft.Collections;
 using Chickensoft.Introspection;
-using System.Collections.Generic;
 
 /// <summary>
 /// Serializable type converter that upgrades outdated serializable types
@@ -17,7 +17,7 @@ public interface ISerializableTypeConverter {
   /// Dependencies that outdated serializable types might need after being
   /// deserialized to upgrade themselves.
   /// </summary>
-  public IReadOnlyBlackboard DependenciesBlackboard { get; }
+  IReadOnlyBlackboard DependenciesBlackboard { get; }
 }
 
 /// <inheritdoc />

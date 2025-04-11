@@ -1,6 +1,6 @@
 # 💾 Serialization
 
-[![Chickensoft Badge][chickensoft-badge]][chickensoft-website] [![Discord][discord-badge]][discord] [![Read the docs][read-the-docs-badge]][docs] ![line coverage][line-coverage] ![branch coverage][branch-coverage]
+[![Chickensoft Badge][chickensoft-badge]][chickensoft-website] [![Discord][discord-badge]][discord] ![line coverage][line-coverage] ![branch coverage][branch-coverage]
 
 System.Text.Json-compatible source generator with automatic support for derived types and polymorphic serialization.
 
@@ -84,7 +84,8 @@ Annoyingly, `System.Text.Json` requires you to tag derived types on the generati
 - ❌ Generic types are not supported.
 - ❌ Models must have parameterless constructors.
 - ❌ Serializable types must be partial.
-- ❌ Only collections supported are `HashSet<T>`, `List<T>`, and `Dictionary<TKey, TValue>`.
+- ❌ Only `HashSet<T>`, `List<T>`, and `Dictionary<TKey, TValue>` collections are supported.
+- ❌ The root type passed into `JsonSerializer.Serialize` must be an object, not a collection. Collections are only supported inside of other objects.
 
 The Chickensoft serializer has strong opinions about how JSON serialization should be done. It's primarily intended to simplify the process of defining models for game save files, but you can use it any C# project which supports C# >= 11.
 
@@ -209,6 +210,9 @@ public partial class Lawyer : Person {
 ## ⏳ Versioning
 
 The serialization system provides support for versioning models when requirements inevitably change.
+
+> [!CAUTION]
+> Versioning does not work for value types.
 
 There are some situations where adding non-required fields to an existing model is not possible, such as when the type of a field changes or you want to introduce a required property.
 
@@ -415,6 +419,45 @@ Serializer.AddConverter(new MyCustomJsonConverter());
 
 Converters registered this way do not need to be specified in the `JsonSerializerOptions`, which allows other libraries to extend the serialization system without requiring additional effort from the developer using the library.
 
+## 🥞 Value Types
+
+You can also define serializable value types. These work with collections, interfaces, and other value types, but do not support versioning and automatic upgrades.
+
+The syntax for defining serializable value types is the same as defining serializable reference types.
+
+```csharp
+[Meta, Id("person_value")]
+public readonly partial record struct PersonValue {
+  [Save("name")]
+  public string Name { get; init; }
+
+  [Save("age")]
+  public int Age { get; init; }
+
+  [Save("pet")]
+  public IPet Pet { get; init; }
+}
+
+public interface IPet {
+  string Name { get; init; }
+
+  PetType Type { get; }
+}
+
+[Meta, Id("dog_value")]
+public readonly partial record struct DogValue : IPet {
+  [Save("name")]
+  public required string Name { get; init; }
+
+  [Save("bark_volume")]
+  public required int BarkVolume { get; init; }
+
+  public PetType Type => PetType.Dog;
+
+  public DogValue() { }
+}
+```
+
 ## 💌 Built-in Types
 
 The serialization system has built-in support for a number of types. If a type is not on this list, you will have to make your own `JsonConverter<T>` for it and register it with the serialization system (or else you will get a runtime error during serialization/deserialization).
@@ -464,12 +507,10 @@ The following basic types and their nullable counterparts are supported:
 
 🐣 Package generated from a 🐤 Chickensoft Template — <https://chickensoft.games>
 
-[chickensoft-badge]: https://raw.githubusercontent.com/chickensoft-games/chickensoft_site/main/static/img/badges/chickensoft_badge.svg
+[chickensoft-badge]: https://chickensoft.games/img/badges/chickensoft_badge.svg
 [chickensoft-website]: https://chickensoft.games
-[discord-badge]: https://raw.githubusercontent.com/chickensoft-games/chickensoft_site/main/static/img/badges/discord_badge.svg
 [discord]: https://discord.gg/gSjaPgMmYW
-[read-the-docs-badge]: https://raw.githubusercontent.com/chickensoft-games/chickensoft_site/main/static/img/badges/read_the_docs_badge.svg
-[docs]: https://chickensoft.games/docs
+[discord-badge]:  https://chickensoft.games/img/badges/discord_badge.svg
 [line-coverage]: Chickensoft.Serialization.Tests/badges/line_coverage.svg
 [branch-coverage]: Chickensoft.Serialization.Tests/badges/branch_coverage.svg
 
