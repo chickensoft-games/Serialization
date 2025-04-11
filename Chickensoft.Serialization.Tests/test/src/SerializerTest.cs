@@ -45,4 +45,12 @@ public partial class SerializationTest {
       converter.ShouldNotBeNull();
     }
   }
+
+  [Fact]
+  public void DoesNotReinitialize() {
+    Should.NotThrow(() => {
+      Serializer.Initialize();
+      Serializer.Initialize();
+    });
+  }
 }
