@@ -2,6 +2,7 @@ namespace Chickensoft.Serialization;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -33,8 +34,10 @@ JsonConverter<object>, ISerializableTypeConverter {
     }
   }
 
+#pragma warning disable CS8618 // thread static should be initialized lazily
   [ThreadStatic]
-  private static NullableTypeReceiver _nullTypeMaker = default!;
+  private static NullableTypeReceiver _nullTypeMaker;
+#pragma warning restore CS8618
 
   /// <inheritdoc />
   public IReadOnlyBlackboard DependenciesBlackboard { get; }
@@ -43,8 +46,8 @@ JsonConverter<object>, ISerializableTypeConverter {
   // Graph to use for introspection. Allows it to be shimmed for testing.
   internal static ITypeGraph Graph { get; set; } = DefaultGraph;
 
-  private string TypeDiscriminator => Serializer.TYPE_PROPERTY;
-  private string VersionDiscriminator => Serializer.VERSION_PROPERTY;
+  private static string TypeDiscriminator => Serializer.TYPE_PROPERTY;
+  private static string VersionDiscriminator => Serializer.VERSION_PROPERTY;
 
   /// <summary>
   /// Create a new logic block converter with the given type info resolver.
@@ -62,6 +65,18 @@ JsonConverter<object>, ISerializableTypeConverter {
     Graph.GetMetadata(typeToConvert) is IIntrospectiveTypeMetadata;
 
   /// <inheritdoc />
+  [UnconditionalSuppressMessage(
+    "AOT",
+    "IL3050:RequiresDynamicCode",
+    Justification = "Chickensoft introspection & serialization system " +
+    "ensures compatible types are serializable."
+  )]
+  [UnconditionalSuppressMessage(
+    "AOT",
+    "IL2026:RequiresUnreferencedCodeAttribute",
+    Justification = "Chickensoft introspection & serialization system " +
+    "ensures compatible types are preserved against trimming."
+  )]
   public override object? Read(
     ref Utf8JsonReader reader,
     Type typeToConvert,
@@ -249,6 +264,18 @@ JsonConverter<object>, ISerializableTypeConverter {
   }
 
   /// <inheritdoc />
+  [UnconditionalSuppressMessage(
+    "AOT",
+    "IL3050:RequiresDynamicCode",
+    Justification = "Chickensoft introspection & serialization system " +
+    "ensures compatible types are serializable."
+  )]
+  [UnconditionalSuppressMessage(
+    "AOT",
+    "IL2026:RequiresUnreferencedCodeAttribute",
+    Justification = "Chickensoft introspection & serialization system " +
+    "ensures compatible types are preserved against trimming."
+  )]
   public override void Write(
     Utf8JsonWriter writer,
     object value,

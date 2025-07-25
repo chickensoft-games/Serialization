@@ -11,9 +11,11 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <OutputPath>./nupkg</OutputPath>
     <DebugType>portable</DebugType>
+    <NoWarn>CA2255</NoWarn>
 
     <!-- Disables most reflection — helps us simulate AOT constraints. -->
     <IlcDisableReflection>true</IlcDisableReflection>
+    <!-- <PublishAot>true</PublishAot> -->
 
     <Title>Chickensoft.Serialization</Title>
     <Version>0.0.0-devbuild</Version>

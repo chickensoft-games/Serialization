@@ -338,11 +338,11 @@ public static class Serializer {
     }
 
     public void Receive<TA, TB>() {
+#pragma warning disable CS8714
       var info = new JsonCollectionInfoValues<Dictionary<TA, TB>>() {
         ObjectCreator = () => [],
         SerializeHandler = null
       };
-#pragma warning disable CS8714
       TypeInfo = JsonMetadataServices.CreateDictionaryInfo<
         Dictionary<TA, TB>, TA, TB
       >(Options, info);
