@@ -3,6 +3,7 @@ namespace Chickensoft.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -12,7 +13,7 @@ using Chickensoft.Introspection;
 /// <summary>
 /// A serializable <see cref="IBlackboard" /> implementation.
 /// </summary>
-public interface ISerializableBlackboard : IBlackboard, ICustomSerializable {
+public interface ISerializableBlackboard : IBlackboard {
   /// <summary>
   /// Types that should be persisted when the owning object is serialized.
   /// </summary>
@@ -55,7 +56,8 @@ public interface ISerializableBlackboard : IBlackboard, ICustomSerializable {
 /// <summary>
 /// A serializable <see cref="IBlackboard" /> implementation.
 /// </summary>
-public class SerializableBlackboard : Blackboard, ISerializableBlackboard {
+public class SerializableBlackboard :
+    Blackboard, ISerializableBlackboard, ICustomSerializable {
   /// <summary>Json property name for blackboard values dictionary.</summary>
   public const string VALUES_PROPERTY = "values";
 
@@ -156,6 +158,18 @@ public class SerializableBlackboard : Blackboard, ISerializableBlackboard {
   }
 
   /// <inheritdoc />
+  [UnconditionalSuppressMessage(
+    "AOT",
+    "IL3050:RequiresDynamicCode",
+    Justification = "Chickensoft introspection & serialization system " +
+    "ensures compatible types are serializable."
+  )]
+  [UnconditionalSuppressMessage(
+    "AOT",
+    "IL2026:RequiresUnreferencedCodeAttribute",
+    Justification = "Chickensoft introspection & serialization system " +
+    "ensures compatible types are preserved against trimming."
+  )]
   public object OnDeserialized(
     IdentifiableTypeMetadata metadata,
     JsonObject json,
@@ -189,6 +203,18 @@ public class SerializableBlackboard : Blackboard, ISerializableBlackboard {
   }
 
   /// <inheritdoc />
+  [UnconditionalSuppressMessage(
+    "AOT",
+    "IL3050:RequiresDynamicCode",
+    Justification = "Chickensoft introspection & serialization system " +
+    "ensures compatible types are serializable."
+  )]
+  [UnconditionalSuppressMessage(
+    "AOT",
+    "IL2026:RequiresUnreferencedCodeAttribute",
+    Justification = "Chickensoft introspection & serialization system " +
+    "ensures compatible types are preserved against trimming."
+  )]
   public void OnSerialized(
     IdentifiableTypeMetadata metadata,
     JsonObject json,
