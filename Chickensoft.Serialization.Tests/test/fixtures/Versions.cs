@@ -7,12 +7,14 @@ using Chickensoft.Introspection;
 public abstract partial record VersionedModel;
 
 [Meta, Version(1)]
-public partial record VersionedModel1 : VersionedModel, IOutdated {
+public partial record VersionedModel1 : VersionedModel, IOutdated
+{
   public object Upgrade(IReadOnlyBlackboard deps) => new VersionedModel2();
 }
 
 [Meta, Version(2)]
-public partial record VersionedModel2 : VersionedModel, IOutdated {
+public partial record VersionedModel2 : VersionedModel, IOutdated
+{
   public object Upgrade(IReadOnlyBlackboard deps) => new VersionedModel3();
 }
 

@@ -8,7 +8,8 @@ using Chickensoft.Collections;
 /// provided which may contain data that the outdated object needs to be able
 /// to upgrade itself.
 /// </summary>
-public interface IOutdated {
+public interface IOutdated
+{
   /// <summary>
   /// Called on an outdated object to upgrade itself to a new object immediately
   /// after deserialization.

@@ -5,7 +5,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-public class MyConverter : JsonConverter<string> {
+public class MyConverter : JsonConverter<string>
+{
   public override string? Read(
     ref Utf8JsonReader reader,
     Type typeToConvert,
@@ -32,7 +33,8 @@ public class MyConverter : JsonConverter<string> {
   ) => writer.WritePropertyName(value);
 }
 
-public class MyConverterFactory : JsonConverterFactory {
+public class MyConverterFactory : JsonConverterFactory
+{
   public override bool CanConvert(Type typeToConvert) =>
     typeToConvert == typeof(string);
 
@@ -42,7 +44,8 @@ public class MyConverterFactory : JsonConverterFactory {
   ) => new MyConverter();
 }
 
-public class BadConverterFactory : JsonConverterFactory {
+public class BadConverterFactory : JsonConverterFactory
+{
   public override bool CanConvert(Type typeToConvert) =>
     typeToConvert == typeof(string);
 

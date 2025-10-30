@@ -4,11 +4,13 @@ using Chickensoft.Serialization;
 using Shouldly;
 using Xunit;
 
-public class UtilitiesTest {
+public class UtilitiesTest
+{
   private sealed record TestValue(int Value);
 
   [Fact]
-  public void IsEquivalent() {
+  public void IsEquivalent()
+  {
     SerializationUtilities.IsEquivalent(null, null).ShouldBeTrue();
     SerializationUtilities.IsEquivalent(null, new object()).ShouldBeFalse();
     var obj = new object();

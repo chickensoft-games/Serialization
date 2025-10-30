@@ -8,10 +8,13 @@ using DeepEqual.Syntax;
 using Shouldly;
 using Xunit;
 
-public class MixAndMatchTest {
+public class MixAndMatchTest
+{
   [Fact]
-  public void CanUseChickensoftModelsFromOutermostSTJModel() {
-    var options = new JsonSerializerOptions {
+  public void CanUseChickensoftModelsFromOutermostSTJModel()
+  {
+    var options = new JsonSerializerOptions
+    {
       Converters = {
         new JsonStringEnumConverter(),
         new SerializableTypeConverter(new Blackboard())
@@ -26,11 +29,14 @@ public class MixAndMatchTest {
       }
     };
 
-    var campCounselor = new CampCounselor {
-      Person = new Person {
+    var campCounselor = new CampCounselor
+    {
+      Person = new Person
+      {
         Name = "Alice Doe",
         Age = 30,
-        Pet = new Dog {
+        Pet = new Dog
+        {
           Name = "Fido",
           BarkVolume = 11,
         },
@@ -73,8 +79,10 @@ public class MixAndMatchTest {
   }
 
   [Fact]
-  public void CanUseSTJModelsFromOutermostChickensoftModel() {
-    var options = new JsonSerializerOptions {
+  public void CanUseSTJModelsFromOutermostChickensoftModel()
+  {
+    var options = new JsonSerializerOptions
+    {
       Converters = {
         new JsonStringEnumConverter(),
         new SerializableTypeConverter(new Blackboard())
@@ -90,11 +98,14 @@ public class MixAndMatchTest {
     };
 
 
-    var campInstructor = new CampInstructor {
-      Person = new Person {
+    var campInstructor = new CampInstructor
+    {
+      Person = new Person
+      {
         Name = "Alice Doe",
         Age = 30,
-        Pet = new Dog {
+        Pet = new Dog
+        {
           Name = "Fido",
           BarkVolume = 11,
         },

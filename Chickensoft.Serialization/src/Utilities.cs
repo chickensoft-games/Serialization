@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 /// <summary>Serialization utilities.</summary>
-public static class SerializationUtilities {
+public static class SerializationUtilities
+{
   /// <summary>
   /// Determines if two logic block states are equivalent. Logic block states
   /// are equivalent if they are the same reference or are equal according to

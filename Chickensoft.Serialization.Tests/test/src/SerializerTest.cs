@@ -7,8 +7,10 @@ using Chickensoft.Serialization.Tests.Fixtures;
 using Shouldly;
 using Xunit;
 
-public partial class SerializationTest {
-  private readonly JsonSerializerOptions _options = new() {
+public partial class SerializationTest
+{
+  private readonly JsonSerializerOptions _options = new()
+  {
     WriteIndented = true,
     TypeInfoResolver = JsonTypeInfoResolver.Combine(
     new SerializableTypeResolver()
@@ -19,7 +21,8 @@ public partial class SerializationTest {
   };
 
   [Fact]
-  public void ExpandsConverter() {
+  public void ExpandsConverter()
+  {
     var converter = Serializer.ExpandConverter(
       typeof(string), new MyConverterFactory(), _options
     );
@@ -28,7 +31,8 @@ public partial class SerializationTest {
   }
 
   [Fact]
-  public void ExpandConverterThrowsIfAnotherFactoryIsFound() {
+  public void ExpandConverterThrowsIfAnotherFactoryIsFound()
+  {
     Should.Throw<InvalidOperationException>(() =>
       Serializer.ExpandConverter(
         typeof(string), new BadConverterFactory(), _options
@@ -37,18 +41,22 @@ public partial class SerializationTest {
   }
 
   [Fact]
-  public void BuiltInConverterFactories() {
+  public void BuiltInConverterFactories()
+  {
     foreach (
       var converterFactory in Serializer.BuiltInConverterFactories
-    ) {
+    )
+    {
       var converter = converterFactory.Value(_options);
       converter.ShouldNotBeNull();
     }
   }
 
   [Fact]
-  public void DoesNotReinitialize() {
-    Should.NotThrow(() => {
+  public void DoesNotReinitialize()
+  {
+    Should.NotThrow(() =>
+    {
       Serializer.Initialize();
       Serializer.Initialize();
     });

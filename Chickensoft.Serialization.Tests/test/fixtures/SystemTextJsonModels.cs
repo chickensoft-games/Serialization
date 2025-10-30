@@ -3,7 +3,8 @@ namespace Chickensoft.Serialization.Tests.Fixtures;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-public enum Medium {
+public enum Medium
+{
   Paint,
   Pencil,
   Digital,

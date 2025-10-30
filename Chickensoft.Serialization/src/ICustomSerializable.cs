@@ -8,7 +8,8 @@ using Chickensoft.Introspection;
 /// Interface for identifiable types that wish to customize serialization and
 /// deserialization.
 /// </summary>
-public interface ICustomSerializable {
+public interface ICustomSerializable
+{
   /// <summary>
   /// Invoked immediately after the object has been deserialized. This provides
   /// the object with a chance to read the actual json data and perform any

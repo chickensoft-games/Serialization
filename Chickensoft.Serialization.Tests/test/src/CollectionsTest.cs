@@ -1,6 +1,7 @@
 namespace Chickensoft.Serialization.Tests;
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Chickensoft.Collections;
 using Chickensoft.Introspection;
@@ -8,10 +9,19 @@ using DeepEqual.Syntax;
 using Shouldly;
 using Xunit;
 
+[
+  SuppressMessage(
+    "Performance",
+    "CA1869",
+    Justification = "We want new JsonSerializerOptions for each test"
+  )
+]
 [Collection("NoRaceConditionWithStaticConverters")]
-public partial class CollectionsTest {
+public partial class CollectionsTest
+{
   [Meta, Id("book")]
-  public partial record Book {
+  public partial record Book
+  {
     [Save("title")]
     public required string Title { get; set; }
 
@@ -23,22 +33,27 @@ public partial class CollectionsTest {
   }
 
   [Meta, Id("bookcase")]
-  public partial record Bookcase {
+  public partial record Bookcase
+  {
     [Save("books")]
     public required List<Book> Books { get; set; }
   }
 
   [Fact]
-  public void SimpleSerializationCase() {
-    var book = new Book {
+  public void SimpleSerializationCase()
+  {
+    var book = new Book
+    {
       Title = "The Book",
       Author = "The Author",
-      RelatedBooks = new Dictionary<string, List<HashSet<string>>> {
+      RelatedBooks = new Dictionary<string, List<HashSet<string>>>
+      {
         ["Title A"] = [["Author A", "Author B"]],
       }
     };
 
-    var options = new JsonSerializerOptions {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = new SerializableTypeResolver(),
       Converters = { new SerializableTypeConverter(new Blackboard()) }
@@ -69,11 +84,14 @@ public partial class CollectionsTest {
   }
 
   [Fact]
-  public void SerializesCollections() {
-    var book = new Book {
+  public void SerializesCollections()
+  {
+    var book = new Book
+    {
       Title = "The Book",
       Author = "The Author",
-      RelatedBooks = new Dictionary<string, List<HashSet<string>>> {
+      RelatedBooks = new Dictionary<string, List<HashSet<string>>>
+      {
         ["Title A"] = [
           ["Author A", "Author B"],
           ["Author C", "Author D"],
@@ -87,7 +105,8 @@ public partial class CollectionsTest {
       },
     };
 
-    var options = new JsonSerializerOptions {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = new SerializableTypeResolver(),
       Converters = { new SerializableTypeConverter(new Blackboard()) }
@@ -139,8 +158,10 @@ public partial class CollectionsTest {
   }
 
   [Fact]
-  public void DeserializesMissingCollectionsToEmptyOnes() {
-    var options = new JsonSerializerOptions {
+  public void DeserializesMissingCollectionsToEmptyOnes()
+  {
+    var options = new JsonSerializerOptions
+    {
       TypeInfoResolver = new SerializableTypeResolver(),
       Converters = { new SerializableTypeConverter(new Blackboard()) },
       WriteIndented = true
@@ -164,8 +185,10 @@ public partial class CollectionsTest {
 
 
   [Fact]
-  public void DeserializesExplicitlyNullCollectionsToNull() {
-    var options = new JsonSerializerOptions {
+  public void DeserializesExplicitlyNullCollectionsToNull()
+  {
+    var options = new JsonSerializerOptions
+    {
       TypeInfoResolver = new SerializableTypeResolver(),
       Converters = { new SerializableTypeConverter(new Blackboard()) },
       WriteIndented = true
@@ -189,8 +212,10 @@ public partial class CollectionsTest {
   }
 
   [Fact]
-  public void SerializesAList() {
-    var bookcase = new Bookcase {
+  public void SerializesAList()
+  {
+    var bookcase = new Bookcase
+    {
       Books = [
         new() { Title = "Title A", Author = "Author A" },
         new() { Title = "Title B", Author = "Author B" },
@@ -198,7 +223,8 @@ public partial class CollectionsTest {
       ]
     };
 
-    var options = new JsonSerializerOptions {
+    var options = new JsonSerializerOptions
+    {
       TypeInfoResolver = new SerializableTypeResolver(),
       Converters = { new SerializableTypeConverter(new Blackboard()) },
       WriteIndented = true

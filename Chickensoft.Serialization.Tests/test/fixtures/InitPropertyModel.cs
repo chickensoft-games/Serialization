@@ -7,7 +7,8 @@ using Chickensoft.Introspection;
 using Chickensoft.Serialization;
 
 [Meta, Id("init_property_model")]
-public partial class InitPropertyModel : IEquatable<InitPropertyModel> {
+public partial class InitPropertyModel : IEquatable<InitPropertyModel>
+{
   [Save("name")]
   public required string Name { get; init; } // required — never null
 
@@ -17,8 +18,10 @@ public partial class InitPropertyModel : IEquatable<InitPropertyModel> {
   [Save("descriptions")]
   public List<string>? Descriptions { get; set; } // not an init prop.
 
-  public override bool Equals(object? obj) {
-    if (obj is not InitPropertyModel other) {
+  public override bool Equals(object? obj)
+  {
+    if (obj is not InitPropertyModel other)
+    {
       return false;
     }
     return
@@ -29,11 +32,13 @@ public partial class InitPropertyModel : IEquatable<InitPropertyModel> {
 
   public bool Equals(InitPropertyModel? other) => Equals((object?)other);
 
-  public override int GetHashCode() {
+  public override int GetHashCode()
+  {
     var hash = new HashCode();
     hash.Add(Name.GetHashCode());
     hash.Add(Age.GetHashCode());
-    foreach (var description in Descriptions ?? []) {
+    foreach (var description in Descriptions ?? [])
+    {
       hash.Add(description.GetHashCode());
     }
     return hash.ToHashCode();

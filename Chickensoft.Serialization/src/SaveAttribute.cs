@@ -6,7 +6,8 @@ using System;
 /// Indicates that a property should be serialized.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public class SaveAttribute : Attribute {
+public class SaveAttribute : Attribute
+{
   /// <summary>
   /// Name to use for the property when serializing and deserializing.
   /// </summary>
@@ -19,7 +20,8 @@ public class SaveAttribute : Attribute {
   /// </summary>
   /// <param name="id">Name to use for the property when serializing and
   /// deserializing.</param>
-  public SaveAttribute(string id) {
+  public SaveAttribute(string id)
+  {
     Id = id;
   }
 }

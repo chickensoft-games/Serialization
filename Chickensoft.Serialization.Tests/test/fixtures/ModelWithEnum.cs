@@ -7,7 +7,8 @@ using Chickensoft.Introspection;
 public partial class ModelWithEnumContext : JsonSerializerContext;
 
 [Meta, Id("model_with_enum")]
-public partial record ModelWithEnum {
+public partial record ModelWithEnum
+{
   [Save("a_type")]
   public ModelType AType { get; init; } = ModelType.Basic;
 
@@ -17,7 +18,8 @@ public partial record ModelWithEnum {
   [Save("c_type")]
   public ModelType CType { get; init; }
 
-  public enum ModelType {
+  public enum ModelType
+  {
     Basic,
     Advanced,
     Complex

@@ -9,15 +9,18 @@ using Chickensoft.Introspection;
 using Shouldly;
 using Xunit;
 
-public partial class SerializableBlackboardTest {
+public partial class SerializableBlackboardTest
+{
   [Meta, Id("serializable_blackboard_test_object")]
-  public partial record TestObject() {
+  public partial record TestObject()
+  {
     [Save("value")]
     public int Value { get; init; }
   }
 
   [Fact]
-  public void Save() {
+  public void Save()
+  {
     var blackboard = new SerializableBlackboard();
     var obj = new TestObject() { Value = 1 };
     blackboard.Save(() => obj);
@@ -28,7 +31,8 @@ public partial class SerializableBlackboardTest {
   }
 
   [Fact]
-  public void SaveObject() {
+  public void SaveObject()
+  {
     var blackboard = new SerializableBlackboard();
     var obj = new TestObject() { Value = 1 };
     blackboard.SaveObject(
@@ -42,7 +46,8 @@ public partial class SerializableBlackboardTest {
   }
 
   [Fact]
-  public void TypesToSaveDoesNotHaveObjectIfEquivalent() {
+  public void TypesToSaveDoesNotHaveObjectIfEquivalent()
+  {
     var blackboard = new SerializableBlackboard();
     var obj = new TestObject() { Value = 1 };
     blackboard.SaveObject(
@@ -56,7 +61,8 @@ public partial class SerializableBlackboardTest {
   }
 
   [Fact]
-  public void InstantiatesAnyMissingSavedData() {
+  public void InstantiatesAnyMissingSavedData()
+  {
     var blackboard = new SerializableBlackboard();
 
     var obj = new TestObject() { Value = 1 };
@@ -71,7 +77,8 @@ public partial class SerializableBlackboardTest {
   }
 
   [Fact]
-  public void ThrowsIfSavingDataTypeAlreadyOnBlackboard() {
+  public void ThrowsIfSavingDataTypeAlreadyOnBlackboard()
+  {
     var blackboard = new SerializableBlackboard();
     var obj = new TestObject() { Value = 1 };
     var obj2 = new TestObject() { Value = 2 };
@@ -82,7 +89,8 @@ public partial class SerializableBlackboardTest {
   }
 
   [Fact]
-  public void ThrowsIfTypeNotFound() {
+  public void ThrowsIfTypeNotFound()
+  {
     var blackboard = new SerializableBlackboard();
     var obj = new TestObject() { Value = 1 };
 
@@ -90,7 +98,8 @@ public partial class SerializableBlackboardTest {
   }
 
   [Fact]
-  public void CannotSetValueIfGoingToBeSaved() {
+  public void CannotSetValueIfGoingToBeSaved()
+  {
     var blackboard = new SerializableBlackboard();
     var obj = new TestObject() { Value = 1 };
 
@@ -100,8 +109,10 @@ public partial class SerializableBlackboardTest {
   }
 
   [Fact]
-  public void Serializes() {
-    var options = new JsonSerializerOptions {
+  public void Serializes()
+  {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = new SerializableTypeResolver(),
       Converters = { new SerializableTypeConverter(new Blackboard()) }
@@ -143,8 +154,10 @@ public partial class SerializableBlackboardTest {
   }
 
   [Fact]
-  public void DeserializationFailsIfNoValuesProperty() {
-    var options = new JsonSerializerOptions {
+  public void DeserializationFailsIfNoValuesProperty()
+  {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = new SerializableTypeResolver(),
       Converters = { new SerializableTypeConverter(new Blackboard()) }
@@ -164,8 +177,10 @@ public partial class SerializableBlackboardTest {
   }
 
   [Fact]
-  public void DeserializationThrowsIfValueHasUnknownIdentifiableType() {
-    var options = new JsonSerializerOptions {
+  public void DeserializationThrowsIfValueHasUnknownIdentifiableType()
+  {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = new SerializableTypeResolver(),
       Converters = { new SerializableTypeConverter(new Blackboard()) }
@@ -191,8 +206,10 @@ public partial class SerializableBlackboardTest {
   }
 
   [Fact]
-  public void DeserializationThrowsIfValueHasUnknownVersion() {
-    var options = new JsonSerializerOptions {
+  public void DeserializationThrowsIfValueHasUnknownVersion()
+  {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = new SerializableTypeResolver(),
       Converters = { new SerializableTypeConverter(new Blackboard()) }
@@ -217,8 +234,10 @@ public partial class SerializableBlackboardTest {
   }
 
   [Fact]
-  public void DeserializationThrowsIfNullValue() {
-    var options = new JsonSerializerOptions {
+  public void DeserializationThrowsIfNullValue()
+  {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = new SerializableTypeResolver(),
       Converters = { new SerializableTypeConverter(new Blackboard()) }
@@ -241,8 +260,10 @@ public partial class SerializableBlackboardTest {
   }
 
   [Fact]
-  public void DeserializationFailsIfJsonSerializerDeserializeReturnsNull() {
-    var options = new JsonSerializerOptions {
+  public void DeserializationFailsIfJsonSerializerDeserializeReturnsNull()
+  {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = new SerializableTypeResolver(),
       Converters = { new SerializableTypeConverter(new Blackboard()) }
