@@ -1,6 +1,7 @@
 namespace Chickensoft.Serialization.Tests;
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using System.Text.Json;
@@ -10,9 +11,18 @@ using Chickensoft.Serialization.Tests.Fixtures;
 using Shouldly;
 using Xunit;
 
-public partial class SerializableTypeConverterTest {
+[
+  SuppressMessage(
+    "Performance",
+    "CA1869",
+    Justification = "We want new JsonSerializerOptions for each test"
+  )
+]
+public partial class SerializableTypeConverterTest
+{
   [Fact]
-  public void IdentifiesCollections() {
+  public void IdentifiesCollections()
+  {
     SerializableTypeConverter.IsCollection(typeof(List<>)).ShouldBeTrue();
     SerializableTypeConverter.IsCollection(typeof(Dictionary<,>)).ShouldBeTrue();
     SerializableTypeConverter.IsCollection(typeof(HashSet<>)).ShouldBeTrue();
@@ -20,7 +30,8 @@ public partial class SerializableTypeConverterTest {
   }
 
   [Fact]
-  public void Initializes() {
+  public void Initializes()
+  {
     new SerializableTypeConverter().ShouldNotBeNull();
 
     var blackboard = new Blackboard();
@@ -29,17 +40,21 @@ public partial class SerializableTypeConverterTest {
   }
 
   [Fact]
-  public void SerializesAndDeserializes() {
-    var person = new Person {
+  public void SerializesAndDeserializes()
+  {
+    var person = new Person
+    {
       Name = "John Doe",
       Age = 30,
-      Pet = new Dog {
+      Pet = new Dog
+      {
         Name = "Fido",
         BarkVolume = 11,
       },
     };
 
-    var options = new JsonSerializerOptions {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = new SerializableTypeResolver(),
       Converters = { new SerializableTypeConverter(new Blackboard()) }
@@ -73,8 +88,10 @@ public partial class SerializableTypeConverterTest {
   }
 
   [Fact]
-  public void InitPropertiesSerialize() {
-    var model = new InitPropertyModel() {
+  public void InitPropertiesSerialize()
+  {
+    var model = new InitPropertyModel()
+    {
       Name = "Jane Doe",
       Age = 30,
       Descriptions = [
@@ -84,7 +101,8 @@ public partial class SerializableTypeConverterTest {
       ]
     };
 
-    var options = new JsonSerializerOptions {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = new SerializableTypeResolver(),
       Converters = { new SerializableTypeConverter(new Blackboard()) }
@@ -117,8 +135,10 @@ public partial class SerializableTypeConverterTest {
   }
 
   [Fact]
-  public void ThrowsIfTryingToWriteNonIdentifiableType() {
-    var options = new JsonSerializerOptions {
+  public void ThrowsIfTryingToWriteNonIdentifiableType()
+  {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = new SerializableTypeResolver()
     };
@@ -136,8 +156,10 @@ public partial class SerializableTypeConverterTest {
   }
 
   [Fact]
-  public void ThrowsIfTryingToReadNonObject() {
-    var options = new JsonSerializerOptions {
+  public void ThrowsIfTryingToReadNonObject()
+  {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = new SerializableTypeResolver()
     };
@@ -145,7 +167,8 @@ public partial class SerializableTypeConverterTest {
     options.Converters.Add(converter);
 
     Should.Throw<JsonException>(
-      () => {
+      () =>
+      {
         var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes("null"));
         converter.Read(ref reader, typeof(object), options);
       }
@@ -153,8 +176,10 @@ public partial class SerializableTypeConverterTest {
   }
 
   [Fact]
-  public void ThrowsIfMissingTypeDiscriminator() {
-    var options = new JsonSerializerOptions {
+  public void ThrowsIfMissingTypeDiscriminator()
+  {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = new SerializableTypeResolver()
     };
@@ -162,7 +187,8 @@ public partial class SerializableTypeConverterTest {
     options.Converters.Add(converter);
 
     Should.Throw<JsonException>(
-      () => {
+      () =>
+      {
         var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes("{}"));
         converter.Read(ref reader, typeof(object), options);
       }
@@ -170,8 +196,10 @@ public partial class SerializableTypeConverterTest {
   }
 
   [Fact]
-  public void ThrowsIfUnknownType() {
-    var options = new JsonSerializerOptions {
+  public void ThrowsIfUnknownType()
+  {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = new SerializableTypeResolver()
     };
@@ -179,7 +207,8 @@ public partial class SerializableTypeConverterTest {
     options.Converters.Add(converter);
 
     Should.Throw<JsonException>(
-      () => {
+      () =>
+      {
         var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(
           /*lang=json*/
           @"{""$type"":""unknown"",""$v"":1}"
@@ -190,8 +219,10 @@ public partial class SerializableTypeConverterTest {
   }
 
   [Fact]
-  public void ThrowsIfTryingToDeserializeNonConcreteModel() {
-    var options = new JsonSerializerOptions {
+  public void ThrowsIfTryingToDeserializeNonConcreteModel()
+  {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = new SerializableTypeResolver()
     };
@@ -199,7 +230,8 @@ public partial class SerializableTypeConverterTest {
     options.Converters.Add(converter);
 
     Should.Throw<JsonException>(
-      () => {
+      () =>
+      {
         var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(
           /*lang=json*/
           """
@@ -215,8 +247,10 @@ public partial class SerializableTypeConverterTest {
   }
 
   [Fact]
-  public void SkipsPropertyWithoutSetter() {
-    var options = new JsonSerializerOptions {
+  public void SkipsPropertyWithoutSetter()
+  {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = new SerializableTypeResolver(),
       Converters = { new SerializableTypeConverter(new Blackboard()) }
@@ -238,8 +272,10 @@ public partial class SerializableTypeConverterTest {
   }
 
   [Fact]
-  public void UpgradesOutdatedVersionsOnDeserialization() {
-    var options = new JsonSerializerOptions {
+  public void UpgradesOutdatedVersionsOnDeserialization()
+  {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = new SerializableTypeResolver(),
       Converters = { new SerializableTypeConverter(new Blackboard()) }
@@ -263,7 +299,8 @@ public partial class SerializableTypeConverterTest {
   public abstract partial class NonConcreteModel;
 
   [Meta, Id("no_setter_model")]
-  public partial class NoSetterModel {
+  public partial class NoSetterModel
+  {
     [Save("name")]
     public string Name { get; } = "Model";
   }
@@ -272,16 +309,19 @@ public partial class SerializableTypeConverterTest {
   public abstract partial class BaseLogEntry { }
 
   [Meta, Version(1)]
-  public partial class LogEntry : BaseLogEntry, IOutdated {
+  public partial class LogEntry : BaseLogEntry, IOutdated
+  {
     [Save("text")]
     public required string Text { get; init; }
 
     [Save("type")]
     public required string Type { get; init; }
 
-    public object Upgrade(IReadOnlyBlackboard deps) => new LogEntry2() {
+    public object Upgrade(IReadOnlyBlackboard deps) => new LogEntry2()
+    {
       Text = Text,
-      Type = Type switch {
+      Type = Type switch
+      {
         "info" => LogType.Info,
         "warning" => LogType.Warning,
         "error" or _ => LogType.Error,
@@ -289,14 +329,16 @@ public partial class SerializableTypeConverterTest {
     };
   }
 
-  public enum LogType {
+  public enum LogType
+  {
     Info,
     Warning,
     Error
   }
 
   [Meta, Version(2)]
-  public partial class LogEntry2 : BaseLogEntry {
+  public partial class LogEntry2 : BaseLogEntry
+  {
     [Save("text")]
     public required string Text { get; init; }
 

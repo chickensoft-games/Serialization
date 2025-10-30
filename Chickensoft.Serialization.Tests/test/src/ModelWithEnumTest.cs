@@ -1,5 +1,6 @@
 namespace Chickensoft.Serialization.Tests;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
@@ -7,9 +8,18 @@ using Chickensoft.Serialization.Tests.Fixtures;
 using Shouldly;
 using Xunit;
 
-public class ModelWithEnumTest {
+[
+  SuppressMessage(
+    "Performance",
+    "CA1869",
+    Justification = "We want new JsonSerializerOptions for each test"
+  )
+]
+public class ModelWithEnumTest
+{
   [Fact]
-  public void DeserializesAndRespectsDefaultValues() {
+  public void DeserializesAndRespectsDefaultValues()
+  {
     var value = /*lang=json,strict*/ """
     {
       "$type": "model_with_enum",
@@ -18,7 +28,8 @@ public class ModelWithEnumTest {
     }
     """;
 
-    var options = new JsonSerializerOptions {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = JsonTypeInfoResolver.Combine(
         ModelWithEnumContext.Default,
@@ -41,7 +52,8 @@ public class ModelWithEnumTest {
   }
 
   [Fact]
-  public void DeserializesAndOverridesDefaultValues() {
+  public void DeserializesAndOverridesDefaultValues()
+  {
     var value = /*lang=json,strict*/ """
     {
       "$type": "model_with_enum",
@@ -51,7 +63,8 @@ public class ModelWithEnumTest {
     }
     """;
 
-    var options = new JsonSerializerOptions {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = JsonTypeInfoResolver.Combine(
         ModelWithEnumContext.Default,

@@ -1,18 +1,29 @@
 namespace Chickensoft.Serialization.Tests;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Chickensoft.Serialization.Tests.Fixtures;
 using Shouldly;
 using Xunit;
 
-public class SourceGeneratedTypeResolverTest {
+[
+  SuppressMessage(
+    "Performance",
+    "CA1869",
+    Justification = "We want new JsonSerializerOptions for each test"
+  )
+]
+public class SourceGeneratedTypeResolverTest
+{
   [Fact]
-  public void SerializesWithSourceGeneration() {
+  public void SerializesWithSourceGeneration()
+  {
     // This is just a simple test that uses the vanilla System.Text.Json
     // features. Later, we'll verify that we can mix and match the
     // Chickensoft serialization system with System.Text.Json.
-    var options = new JsonSerializerOptions {
+    var options = new JsonSerializerOptions
+    {
       Converters = { new JsonStringEnumConverter() },
       WriteIndented = true
     };
@@ -21,8 +32,6 @@ public class SourceGeneratedTypeResolverTest {
 
     var artist = new Artist("Leonardo da Vinci", 50, Medium.Paint);
     var painting = new Painting("Mona Lisa", artist, ["portrait", "famous"]);
-
-    var defaultOptions = new JsonSerializerOptions();
 
     var json = JsonSerializer.Serialize<Work>(painting, options);
 

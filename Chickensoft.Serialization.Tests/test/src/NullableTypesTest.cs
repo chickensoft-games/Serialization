@@ -6,8 +6,10 @@ using Chickensoft.Serialization.Tests.Fixtures;
 using Shouldly;
 using Xunit;
 
-public class NullableValueTypesTest {
-  private readonly JsonSerializerOptions _options = new() {
+public class NullableValueTypesTest
+{
+  private readonly JsonSerializerOptions _options = new()
+  {
     WriteIndented = true,
     TypeInfoResolver = JsonTypeInfoResolver.Combine(
       MyValueTypeContext.Default,
@@ -19,8 +21,10 @@ public class NullableValueTypesTest {
   };
 
   [Fact]
-  public void SerializationRoundTripWithValues() {
-    var model = new NullableValueTypes {
+  public void SerializationRoundTripWithValues()
+  {
+    var model = new NullableValueTypes
+    {
       NullableBool = true,
       NullableInt = 42,
       NullableString = "a",
@@ -79,8 +83,10 @@ public class NullableValueTypesTest {
   }
 
   [Fact]
-  public void SerializationRoundTripWithoutValues() {
-    var model = new NullableValueTypes() {
+  public void SerializationRoundTripWithoutValues()
+  {
+    var model = new NullableValueTypes()
+    {
       NullableValueList = [null, new MyValueType("Value 2", 2)],
       NullableIntList = [1, null, 2],
     };

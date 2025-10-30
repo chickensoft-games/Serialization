@@ -4,7 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization.Metadata;
 
-public class JsonDerivedTypeComparer : IEqualityComparer<JsonDerivedType> {
+public class JsonDerivedTypeComparer : IEqualityComparer<JsonDerivedType>
+{
   public static JsonDerivedTypeComparer Instance { get; } =
     new JsonDerivedTypeComparer();
 

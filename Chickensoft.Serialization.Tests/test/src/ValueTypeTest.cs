@@ -7,8 +7,10 @@ using DeepEqual.Syntax;
 using Shouldly;
 using Xunit;
 
-public class ValueTypeTest {
-  private readonly JsonSerializerOptions _options = new() {
+public class ValueTypeTest
+{
+  private readonly JsonSerializerOptions _options = new()
+  {
     WriteIndented = true,
     TypeInfoResolver = new SerializableTypeResolver(),
     Converters = {
@@ -17,10 +19,12 @@ public class ValueTypeTest {
     },
   };
 
-  private readonly PersonValue _personWithDog = new() {
+  private readonly PersonValue _personWithDog = new()
+  {
     Name = "John Doe",
     Age = 42,
-    Pet = new DogValue {
+    Pet = new DogValue
+    {
       Name = "Fluffy",
       BarkVolume = 10
     },
@@ -59,17 +63,20 @@ public class ValueTypeTest {
     }
     """;
 
-  private readonly PersonValue _personWithCat = new() {
+  private readonly PersonValue _personWithCat = new()
+  {
     Name = "Jane Doe",
     Age = 44,
-    Pet = new CatValue {
+    Pet = new CatValue
+    {
       Name = "Socks",
       PurrVolume = 5
     },
   };
 
   [Fact]
-  public void Deserializes() {
+  public void Deserializes()
+  {
     var family = JsonSerializer.Deserialize<FamilyValue>(
       _serialized, _options
     );
@@ -80,7 +87,8 @@ public class ValueTypeTest {
   }
 
   [Fact]
-  public void Serializes() {
+  public void Serializes()
+  {
     var family = new FamilyValue { Members = [_personWithDog, _personWithCat] };
     var data = JsonSerializer.Serialize(family, _options);
 
@@ -88,7 +96,8 @@ public class ValueTypeTest {
   }
 
   [Fact]
-  public void RoundTrip() {
+  public void RoundTrip()
+  {
     var family = new FamilyValue { Members = [_personWithDog, _personWithCat] };
     var data = JsonSerializer.Serialize(family, _options);
 

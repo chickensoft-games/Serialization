@@ -8,9 +8,11 @@ using Chickensoft.Introspection;
 /// <summary>
 /// Chickensoft serialization type resolver.
 /// </summary>
-public class SerializableTypeResolver : IJsonTypeInfoResolver {
+public class SerializableTypeResolver : IJsonTypeInfoResolver
+{
   /// <inheritdoc />
-  public JsonTypeInfo? GetTypeInfo(Type type, JsonSerializerOptions options) {
+  public JsonTypeInfo? GetTypeInfo(Type type, JsonSerializerOptions options)
+  {
     // Check for converters we have been explicitly told about.
     //
     // This covers cases where we have converters for types that we don't have
@@ -25,7 +27,8 @@ public class SerializableTypeResolver : IJsonTypeInfoResolver {
       Serializer._customConverters.TryGetValue(
         type, out var customConverterFactory
       )
-    ) {
+    )
+    {
       return customConverterFactory(options);
     }
 
@@ -35,7 +38,8 @@ public class SerializableTypeResolver : IJsonTypeInfoResolver {
     if (
       Serializer.GetRuntimeConverterForType(type, options) is { } converter &&
       Types.Graph.GetMetadata(type) is IClosedTypeMetadata closedTypeMetadata
-    ) {
+    )
+    {
       // Type has a runtime converter (specified in serializer options) and
       // is also a closed type that we possess generated introspection metadata
       // for.
@@ -56,14 +60,16 @@ public class SerializableTypeResolver : IJsonTypeInfoResolver {
       Serializer.BuiltInConverterFactories.TryGetValue(
         type, out var builtInConverterFactory
       )
-    ) {
+    )
+    {
       // Type has a built-in converter.
       return builtInConverterFactory(options);
     }
 
     // Check collection types that we know about.
 
-    if (Serializer._collections.TryGetValue(type, out var collectionInfo)) {
+    if (Serializer._collections.TryGetValue(type, out var collectionInfo))
+    {
       // Supported collection type we discovered previously
       // (List, HashSet, Dictionary)
       return collectionInfo(options);

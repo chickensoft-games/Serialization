@@ -7,12 +7,14 @@ using Shouldly;
 using Xunit;
 
 [Collection("NoRaceConditionWithStaticConverters")]
-public partial class SerializableTypeResolverTest {
+public partial class SerializableTypeResolverTest
+{
   [Meta, Id("type_resolver_test_model")]
   public partial record TypeResolverTestModel;
 
   [Fact]
-  public void ReturnsACustomConverter() {
+  public void ReturnsACustomConverter()
+  {
 
     var options = new JsonSerializerOptions { };
 

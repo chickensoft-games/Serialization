@@ -12,7 +12,8 @@ public partial class MyValueTypeContext : JsonSerializerContext;
 
 
 [Meta, Id("nullable_value_types")]
-public partial class NullableValueTypes {
+public partial class NullableValueTypes
+{
   [Save("nullable_int")]
   public int? NullableInt { get; set; }
 

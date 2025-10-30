@@ -13,7 +13,8 @@ using Chickensoft.Introspection;
 /// <summary>
 /// Chickensoft serialization utilities.
 /// </summary>
-public static class Serializer {
+public static class Serializer
+{
 
   /// <summary>
   /// Type discriminator used when serializing and deserializing identifiable
@@ -42,7 +43,9 @@ public static class Serializer {
   /// </summary>
   public static Dictionary<
     Type, Func<JsonSerializerOptions, JsonTypeInfo>
-  > BuiltInConverterFactories { get; } = new() {
+  > BuiltInConverterFactories
+  { get; } = new()
+  {
     [typeof(bool)] = (options) =>
       JsonMetadataServices.CreateValueInfo<bool>(
         options, JsonMetadataServices.BooleanConverter
@@ -251,8 +254,10 @@ public static class Serializer {
   internal static bool _isInitialized;
 
   [ModuleInitializer]
-  internal static void Initialize() {
-    if (_isInitialized) {
+  internal static void Initialize()
+  {
+    if (_isInitialized)
+    {
       return;
     }
 
@@ -276,7 +281,8 @@ public static class Serializer {
   /// <param name="converter">Custom converter.</param>
   /// <typeparam name="T">Type of value to convert.</typeparam>
   public static void AddConverter<T>(JsonConverter<T> converter) =>
-    _customConverters[typeof(T)] = (options) => {
+    _customConverters[typeof(T)] = (options) =>
+    {
       var expandedConverter = ExpandConverter(typeof(T), converter, options);
 
       return JsonMetadataServices.CreateValueInfo<T>(
@@ -289,16 +295,20 @@ public static class Serializer {
 
   #region Private Helper Types
   // Call with list element type
-  private class ListInfoCreator : ITypeReceiver {
+  private class ListInfoCreator : ITypeReceiver
+  {
     public JsonSerializerOptions Options { get; }
     public JsonTypeInfo TypeInfo { get; private set; } = default!;
 
-    public ListInfoCreator(JsonSerializerOptions options) {
+    public ListInfoCreator(JsonSerializerOptions options)
+    {
       Options = options;
     }
 
-    public void Receive<T>() {
-      var info = new JsonCollectionInfoValues<List<T>>() {
+    public void Receive<T>()
+    {
+      var info = new JsonCollectionInfoValues<List<T>>()
+      {
         ObjectCreator = () => [],
         SerializeHandler = null
       };
@@ -308,16 +318,20 @@ public static class Serializer {
   }
 
   // Call with hash set element type
-  private class HashSetInfoCreator : ITypeReceiver {
+  private class HashSetInfoCreator : ITypeReceiver
+  {
     public JsonSerializerOptions Options { get; }
     public JsonTypeInfo TypeInfo { get; private set; } = default!;
 
-    public HashSetInfoCreator(JsonSerializerOptions options) {
+    public HashSetInfoCreator(JsonSerializerOptions options)
+    {
       Options = options;
     }
 
-    public void Receive<T>() {
-      var info = new JsonCollectionInfoValues<HashSet<T>>() {
+    public void Receive<T>()
+    {
+      var info = new JsonCollectionInfoValues<HashSet<T>>()
+      {
         ObjectCreator = () => [],
         SerializeHandler = null
       };
@@ -329,17 +343,21 @@ public static class Serializer {
   }
 
   // Call with dictionary key and value types
-  private class DictionaryInfoCreator : ITypeReceiver2 {
+  private class DictionaryInfoCreator : ITypeReceiver2
+  {
     public JsonSerializerOptions Options { get; }
     public JsonTypeInfo TypeInfo { get; private set; } = default!;
 
-    public DictionaryInfoCreator(JsonSerializerOptions options) {
+    public DictionaryInfoCreator(JsonSerializerOptions options)
+    {
       Options = options;
     }
 
-    public void Receive<TA, TB>() {
+    public void Receive<TA, TB>()
+    {
 #pragma warning disable CS8714
-      var info = new JsonCollectionInfoValues<Dictionary<TA, TB>>() {
+      var info = new JsonCollectionInfoValues<Dictionary<TA, TB>>()
+      {
         ObjectCreator = () => [],
         SerializeHandler = null
       };
@@ -351,7 +369,8 @@ public static class Serializer {
     }
   }
 
-  internal class CustomConverterTypeInfoCreator : ITypeReceiver {
+  internal class CustomConverterTypeInfoCreator : ITypeReceiver
+  {
     public JsonSerializerOptions Options { get; }
     public JsonConverter Converter { get; }
     public JsonTypeInfo TypeInfo { get; private set; } = default!;
@@ -359,7 +378,8 @@ public static class Serializer {
     public CustomConverterTypeInfoCreator(
       JsonSerializerOptions options,
       JsonConverter converter
-    ) {
+    )
+    {
       Options = options;
       Converter = converter;
     }
@@ -384,14 +404,18 @@ public static class Serializer {
     TypeNode genericType,
     IJsonTypeInfoResolver? resolver,
     JsonSerializerOptions options
-  ) {
-    if (_collections.ContainsKey(genericType.ClosedType)) {
+  )
+  {
+    if (_collections.ContainsKey(genericType.ClosedType))
+    {
       // We've already cached this collection type.
       return;
     }
 
-    if (genericType.OpenType == typeof(List<>)) {
-      _collections[genericType.ClosedType] = (options) => {
+    if (genericType.OpenType == typeof(List<>))
+    {
+      _collections[genericType.ClosedType] = (options) =>
+      {
         var listInfoCreator = new ListInfoCreator(options);
         genericType.Arguments[0].GenericTypeGetter(listInfoCreator);
         var typeInfo = listInfoCreator.TypeInfo;
@@ -401,8 +425,10 @@ public static class Serializer {
 
       IdentifyCollectionTypes(genericType.Arguments[0], resolver, options);
     }
-    else if (genericType.OpenType == typeof(HashSet<>)) {
-      _collections[genericType.ClosedType] = (options) => {
+    else if (genericType.OpenType == typeof(HashSet<>))
+    {
+      _collections[genericType.ClosedType] = (options) =>
+      {
         var hashSetInfoCreator = new HashSetInfoCreator(options);
         genericType.Arguments[0].GenericTypeGetter(hashSetInfoCreator);
         var typeInfo = hashSetInfoCreator.TypeInfo;
@@ -412,8 +438,10 @@ public static class Serializer {
 
       IdentifyCollectionTypes(genericType.Arguments[0], resolver, options);
     }
-    else if (genericType.OpenType == typeof(Dictionary<,>)) {
-      _collections[genericType.ClosedType] = (options) => {
+    else if (genericType.OpenType == typeof(Dictionary<,>))
+    {
+      _collections[genericType.ClosedType] = (options) =>
+      {
         var dictionaryInfoCreator = new DictionaryInfoCreator(options);
         genericType.GenericTypeGetter2!(dictionaryInfoCreator);
         var typeInfo = dictionaryInfoCreator.TypeInfo;
@@ -428,10 +456,13 @@ public static class Serializer {
 
   internal static JsonConverter? GetRuntimeConverterForType(
     Type type, JsonSerializerOptions options
-  ) {
-    for (var i = 0; i < options.Converters.Count; i++) {
+  )
+  {
+    for (var i = 0; i < options.Converters.Count; i++)
+    {
       var converter = options.Converters[i];
-      if (converter.CanConvert(type)) {
+      if (converter.CanConvert(type))
+      {
         return ExpandConverter(type, converter, options);
       }
     }
@@ -444,10 +475,13 @@ public static class Serializer {
     Type type,
     JsonConverter? converter,
     JsonSerializerOptions options
-  ) {
-    if (converter is JsonConverterFactory factory) {
+  )
+  {
+    if (converter is JsonConverterFactory factory)
+    {
       converter = factory.CreateConverter(type, options);
-      if (converter is null or JsonConverterFactory) {
+      if (converter is null or JsonConverterFactory)
+      {
         throw new InvalidOperationException(string.Format(
           "The converter '{0}' cannot return null or a " +
           "JsonConverterFactory instance.",

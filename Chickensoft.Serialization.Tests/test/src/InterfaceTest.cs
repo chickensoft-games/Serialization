@@ -6,30 +6,37 @@ using Chickensoft.Introspection;
 using Shouldly;
 using Xunit;
 
-public partial class InterfaceTest {
-  public interface IAliasedModel {
+public partial class InterfaceTest
+{
+  public interface IAliasedModel
+  {
     int Value { get; }
   }
 
   [Meta, Id("aliased_model")]
-  public partial class AliasedModel : IAliasedModel {
+  public partial class AliasedModel : IAliasedModel
+  {
     [Save("value")]
     public int Value { get; set; }
   }
 
   [Meta, Id("interface_test_model")]
-  public partial class TestModel {
+  public partial class TestModel
+  {
     [Save("aliased_model")]
     public required IAliasedModel AliasedModel { get; set; }
   }
 
   [Fact]
-  public void SerializesAsInterface() {
-    var model = new TestModel {
+  public void SerializesAsInterface()
+  {
+    var model = new TestModel
+    {
       AliasedModel = new AliasedModel { Value = 10 }
     };
 
-    var options = new JsonSerializerOptions {
+    var options = new JsonSerializerOptions
+    {
       WriteIndented = true,
       TypeInfoResolver = new SerializableTypeResolver(),
       Converters = { new SerializableTypeConverter(new Blackboard()) }

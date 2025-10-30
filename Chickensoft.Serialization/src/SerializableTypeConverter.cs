@@ -13,7 +13,8 @@ using Chickensoft.Introspection;
 /// Serializable type converter that upgrades outdated serializable types
 /// as soon as they are deserialized.
 /// </summary>
-public interface ISerializableTypeConverter {
+public interface ISerializableTypeConverter
+{
   /// <summary>
   /// Dependencies that outdated serializable types might need after being
   /// deserialized to upgrade themselves.
@@ -23,15 +24,15 @@ public interface ISerializableTypeConverter {
 
 /// <inheritdoc />
 public class SerializableTypeConverter :
-JsonConverter<object>, ISerializableTypeConverter {
+JsonConverter<object>, ISerializableTypeConverter
+{
 
-  private class NullableTypeReceiver : ITypeReceiver {
+  private class NullableTypeReceiver : ITypeReceiver
+  {
     public Type NullableType { get; private set; } = default!;
 
     // silly, but works for both reference and value types amazingly
-    public void Receive<T>() {
-      NullableType = typeof(T);
-    }
+    public void Receive<T>() => NullableType = typeof(T);
   }
 
 #pragma warning disable CS8618 // thread static should be initialized lazily
@@ -56,7 +57,8 @@ JsonConverter<object>, ISerializableTypeConverter {
   /// by outdated states to upgrade themselves.</param>
   public SerializableTypeConverter(
     IReadOnlyBlackboard? dependenciesBlackboard = null
-  ) {
+  )
+  {
     DependenciesBlackboard = dependenciesBlackboard ?? new Blackboard();
   }
 
@@ -81,7 +83,8 @@ JsonConverter<object>, ISerializableTypeConverter {
     ref Utf8JsonReader reader,
     Type typeToConvert,
     JsonSerializerOptions options
-  ) {
+  )
+  {
     _nullTypeMaker ??= new NullableTypeReceiver();
 
     var json = JsonNode.Parse(ref reader)?.AsObject() ?? throw new JsonException(
@@ -103,7 +106,8 @@ JsonConverter<object>, ISerializableTypeConverter {
     if (
       Graph.GetIdentifiableType(typeId, version) is not { } type ||
       Graph.GetMetadata(type) is not IdentifiableTypeMetadata metadata
-    ) {
+    )
+    {
       throw new JsonException(
         $"The type `{typeToConvert}` has an unknown identifiable type: " +
         $"id = {typeId}, version = {version}."
@@ -122,8 +126,10 @@ JsonConverter<object>, ISerializableTypeConverter {
     var initProps = hasInitProps ? new Dictionary<string, object?>() : null;
     var normalProps = hasInitProps ? new List<Action>() : null;
 
-    foreach (var property in properties) {
-      if (GetPropertyId(property) is not { } propertyId) {
+    foreach (var property in properties)
+    {
+      if (GetPropertyId(property) is not { } propertyId)
+      {
         // Only read properties marked with the [Save] attribute.
         continue;
       }
@@ -144,7 +150,8 @@ JsonConverter<object>, ISerializableTypeConverter {
 
       var propertyType = property.TypeNode.ClosedType;
 
-      if (isPresentInJson) {
+      if (isPresentInJson)
+      {
         // Peek at the type of the property's value to see if it's more
         // specific than the type in the metadata (i.e., a derived type).
         // This allows us to support concrete implementations of declared types
@@ -155,7 +162,8 @@ JsonConverter<object>, ISerializableTypeConverter {
           propertyValueJsonNode[TypeDiscriminator]?.ToString()
             is { } propertyTypeId &&
           Graph.GetIdentifiableType(propertyTypeId) is { } idType
-        ) {
+        )
+        {
           // Peeking a property value's type only works if the property value
           // is a non-null object and it actually has a type discriminator.
           // Types with System.Text.Json generated metadata won't necessarily
@@ -167,7 +175,8 @@ JsonConverter<object>, ISerializableTypeConverter {
           propertyType = idType;
         }
 
-        if (propertyType.IsValueType && property.TypeNode.IsNullable) {
+        if (propertyType.IsValueType && property.TypeNode.IsNullable)
+        {
           // nullable value types
           property.TypeNode.GenericTypeGetter(_nullTypeMaker);
           propertyType = _nullTypeMaker.NullableType!;
@@ -186,7 +195,8 @@ JsonConverter<object>, ISerializableTypeConverter {
         !isPresentInJson &&
         IsCollection(property.TypeNode.OpenType) &&
         !property.HasDefaultValue
-      ) {
+      )
+      {
         // Property is not in the json, but it's a collection value that doesn't
         // have a default value in the model.
         //
@@ -212,23 +222,28 @@ JsonConverter<object>, ISerializableTypeConverter {
         shouldSet = true;
       }
 
-      if (!shouldSet) {
+      if (!shouldSet)
+      {
         continue;
       }
 
-      if (hasInitProps) {
+      if (hasInitProps)
+      {
         // Init properties require us to set properties later, so we save
         // the init prop values to use in the generated metadata constructor.
         //
         // We also save closures which will set the normal properties, too.
-        if (property.IsInit) {
+        if (property.IsInit)
+        {
           initProps!.Add(property.Name, propertyValue);
         }
-        else if (property.Setter is { } propertySetter) {
+        else if (property.Setter is { } propertySetter)
+        {
           normalProps!.Add(() => propertySetter(value!, propertyValue));
         }
       }
-      else if (property.Setter is { } propertySetter) {
+      else if (property.Setter is { } propertySetter)
+      {
         // We can set the property immediately since there are no init props.
         propertySetter(value!, propertyValue);
       }
@@ -236,18 +251,21 @@ JsonConverter<object>, ISerializableTypeConverter {
 
     // We have to use the generated metatype method to construct objects with
     // init properties.
-    if (hasInitProps) {
+    if (hasInitProps)
+    {
       value = metadata.Metatype.Construct(initProps);
 
       // Set other properties that are not init properties now that we have
       // an object.
-      foreach (var setProp in normalProps!) {
+      foreach (var setProp in normalProps!)
+      {
         setProp();
       }
     }
 
     // Upgrade the deserialized object as needed.
-    while (value is IOutdated outdated) {
+    while (value is IOutdated outdated)
+    {
       value = outdated.Upgrade(DependenciesBlackboard);
     }
 
@@ -255,7 +273,8 @@ JsonConverter<object>, ISerializableTypeConverter {
     // If the type implements ISerializationAware, we'll call the OnDeserialized
     // method to allow it to modify itself (or replace itself altogether) based
     // on the json object data.
-    if (value is ICustomSerializable aware) {
+    if (value is ICustomSerializable aware)
+    {
       // We know the type must be concrete and identifiable at this point.
       value = aware.OnDeserialized(metadata, json, options);
     }
@@ -280,7 +299,8 @@ JsonConverter<object>, ISerializableTypeConverter {
     Utf8JsonWriter writer,
     object value,
     JsonSerializerOptions options
-  ) {
+  )
+  {
     _nullTypeMaker ??= new NullableTypeReceiver();
 
     var type = value.GetType();
@@ -292,7 +312,8 @@ JsonConverter<object>, ISerializableTypeConverter {
     if (
       metadata is not IIdentifiableTypeMetadata idMetadata ||
       metadata is not IConcreteIntrospectiveTypeMetadata concreteMetadata
-    ) {
+    )
+    {
       throw new JsonException(
         $"The type `{type}` is not an identifiable introspective type."
       );
@@ -307,13 +328,16 @@ JsonConverter<object>, ISerializableTypeConverter {
     // Get all serializable properties, including those from base types.
     var properties = Graph.GetProperties(type);
 
-    foreach (var property in properties) {
-      if (property.Getter is not { } getter) {
+    foreach (var property in properties)
+    {
+      if (property.Getter is not { } getter)
+      {
         // Property cannot be read, only set.
         continue;
       }
 
-      if (GetPropertyId(property) is not { } propertyId) {
+      if (GetPropertyId(property) is not { } propertyId)
+      {
         // Only write properties marked with the [Save] attribute.
         continue;
       }
@@ -334,13 +358,15 @@ JsonConverter<object>, ISerializableTypeConverter {
       if (
         valueType is { } &&
         options.TypeInfoResolver!.GetTypeInfo(valueType, options) is { }
-      ) {
+      )
+      {
         // The actual instance type is a known serializable type, so we assume
         // it is more specific than the declared property type. Use it instead.
         propertyType = valueType;
       }
 
-      if (propertyType.IsValueType && property.TypeNode.IsNullable) {
+      if (propertyType.IsValueType && property.TypeNode.IsNullable)
+      {
         // nullable value types
         property.TypeNode.GenericTypeGetter(_nullTypeMaker);
         propertyType = _nullTypeMaker.NullableType!;
@@ -360,7 +386,8 @@ JsonConverter<object>, ISerializableTypeConverter {
     if (
       value is ICustomSerializable aware &&
       metadata is IdentifiableTypeMetadata identifiableTypeMetadata
-    ) {
+    )
+    {
       aware.OnSerialized(identifiableTypeMetadata, json, options);
     }
 

@@ -8,10 +8,13 @@ using DeepEqual.Syntax;
 using Shouldly;
 using Xunit;
 
-public class MyEnumAotTest {
+public class MyEnumAotTest
+{
   [Fact]
-  public void CanUseEnumsWithStjGeneratedMetadataForUseInAotEnvironments() {
-    var options = new JsonSerializerOptions {
+  public void CanUseEnumsWithStjGeneratedMetadataForUseInAotEnvironments()
+  {
+    var options = new JsonSerializerOptions
+    {
       Converters = {
         new JsonStringEnumConverter<MyEnum>(),
         new SerializableTypeConverter(new Blackboard())

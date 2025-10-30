@@ -3,7 +3,8 @@ namespace Chickensoft.Serialization.Tests.Fixtures;
 using Chickensoft.Introspection;
 
 [Meta, Id("person")]
-public partial record Person {
+public partial record Person
+{
   [Save("name")]
   public string Name { get; set; } = default!;
 
@@ -20,13 +21,15 @@ public partial record Person {
   public string Strength { set { } }
 }
 
-public enum PetType {
+public enum PetType
+{
   Dog,
   Cat,
 }
 
 [Meta]
-public abstract partial record Pet {
+public abstract partial record Pet
+{
   [Save("name")]
   public string Name { get; set; } = "";
 
@@ -34,8 +37,10 @@ public abstract partial record Pet {
 }
 
 [Meta, Id("dog")]
-public partial record Dog : Pet {
-  public Dog() {
+public partial record Dog : Pet
+{
+  public Dog()
+  {
     Type = PetType.Dog;
   }
 
@@ -44,8 +49,10 @@ public partial record Dog : Pet {
 }
 
 [Meta, Id("cat")]
-public partial record Cat : Pet {
-  public Cat() {
+public partial record Cat : Pet
+{
+  public Cat()
+  {
     Type = PetType.Cat;
   }
 

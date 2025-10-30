@@ -13,7 +13,8 @@ using Chickensoft.Introspection;
 /// <summary>
 /// A serializable <see cref="IBlackboard" /> implementation.
 /// </summary>
-public interface ISerializableBlackboard : IBlackboard {
+public interface ISerializableBlackboard : IBlackboard
+{
   /// <summary>
   /// Types that should be persisted when the owning object is serialized.
   /// </summary>
@@ -57,7 +58,8 @@ public interface ISerializableBlackboard : IBlackboard {
 /// A serializable <see cref="IBlackboard" /> implementation.
 /// </summary>
 public class SerializableBlackboard :
-    Blackboard, ISerializableBlackboard, ICustomSerializable {
+    Blackboard, ISerializableBlackboard, ICustomSerializable
+{
   /// <summary>Json property name for blackboard values dictionary.</summary>
   public const string VALUES_PROPERTY = "values";
 
@@ -100,9 +102,12 @@ public class SerializableBlackboard :
   /// Instantiates and adds any missing saved data types that have not been
   /// added to the blackboard yet.
   /// </summary>
-  public void InstantiateAnyMissingSavedData() {
-    foreach (var type in _saveTypes.Keys) {
-      if (!_blackboard.ContainsKey(type)) {
+  public void InstantiateAnyMissingSavedData()
+  {
+    foreach (var type in _saveTypes.Keys)
+    {
+      if (!_blackboard.ContainsKey(type))
+      {
         _blackboard[type] = _saveTypes[type]();
       }
     }
@@ -114,8 +119,10 @@ public class SerializableBlackboard :
     Type type,
     Func<object> factory,
     object? referenceValue
-  ) {
-    if (_blackboard.ContainsKey(type)) {
+  )
+  {
+    if (_blackboard.ContainsKey(type))
+    {
       throw new DuplicateNameException(
         $"Cannot save blackboard data `{type}` since it is already on the " +
         "blackboard."
@@ -127,15 +134,18 @@ public class SerializableBlackboard :
   }
 
   /// <inheritdoc />
-  protected override object GetBlackboardData(Type type) {
+  protected override object GetBlackboardData(Type type)
+  {
     // If we have data of this type on the blackboard, return it.
-    if (_blackboard.TryGetValue(type, out var data)) {
+    if (_blackboard.TryGetValue(type, out var data))
+    {
       return data;
     }
 
     // If it is a persisted type that isn't on the blackboard yet, we can
     // create an instance of the data and add it.
-    if (_saveTypes.TryGetValue(type, out var saveType)) {
+    if (_saveTypes.TryGetValue(type, out var saveType))
+    {
       data = saveType();
       _blackboard[type] = data;
       return data;
@@ -146,8 +156,10 @@ public class SerializableBlackboard :
   }
 
   /// <inheritdoc />
-  protected override void SetBlackboardData(Type type, object data) {
-    if (_saveTypes.ContainsKey(type)) {
+  protected override void SetBlackboardData(Type type, object data)
+  {
+    if (_saveTypes.ContainsKey(type))
+    {
       throw new DuplicateNameException(
         $"Cannot set blackboard data `{type}` since it would conflict with " +
         "persisted data on the blackboard."
@@ -174,13 +186,15 @@ public class SerializableBlackboard :
     IdentifiableTypeMetadata metadata,
     JsonObject json,
     JsonSerializerOptions options
-  ) {
+  )
+  {
     var valuesJson =
       json[VALUES_PROPERTY]?.AsObject() ?? throw new JsonException(
         $"Blackboard is missing the `{VALUES_PROPERTY}` property."
       );
 
-    foreach (var valueJson in valuesJson) {
+    foreach (var valueJson in valuesJson)
+    {
       var type = Introspection.Types.Graph.GetIdentifiableType(
         id: valueJson.Key,
         version: valueJson.Value?[Serializer.VERSION_PROPERTY]?.GetValue<int>()
@@ -219,13 +233,15 @@ public class SerializableBlackboard :
     IdentifiableTypeMetadata metadata,
     JsonObject json,
     JsonSerializerOptions options
-  ) {
+  )
+  {
     var graph = Introspection.Types.Graph;
 
     var typesToSave = TypesToSave.Select(
       // The Save<T>() method has a constraint on the type that ensures
       // saved types will always be identifiable.
-      (type) => new {
+      (type) => new
+      {
         Type = type,
         Metadata = (IdentifiableTypeMetadata)graph.GetMetadata(type)!
       }
@@ -236,7 +252,8 @@ public class SerializableBlackboard :
     var valuesJson = new JsonObject();
 
     // Save all the identifiable types we are supposed to persist.
-    foreach (var objType in typesToSave) {
+    foreach (var objType in typesToSave)
+    {
       var obj = GetObject(objType.Type);
 
       valuesJson[objType.Metadata.Id] = JsonSerializer.SerializeToNode(
