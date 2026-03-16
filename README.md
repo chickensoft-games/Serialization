@@ -320,7 +320,7 @@ upgradeDependencies.Set(new MyService());
 var options = new JsonSerializerOptions {
   WriteIndented = true,
   TypeInfoResolver = new SerializableTypeResolver(),
-  Converters = { new IdentifiableTypeConverter(new Blackboard()) }
+  Converters = { new IdentifiableTypeConverter(upgradeDependencies) }
 };
 
 var model = JsonSerializer.Deserialize<LogEntry>(json, options);
