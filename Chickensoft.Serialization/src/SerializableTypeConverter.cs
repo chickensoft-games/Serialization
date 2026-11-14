@@ -208,10 +208,7 @@ JsonConverter<object>, ISerializableTypeConverter
         // have type info. Also, we expect the type resolver to exist and be
         // a SerializableTypeResolver that provides our cached collection type
         // info.
-        var typeInfo =
-          options
-            .TypeInfoResolver!
-            .GetTypeInfo(propertyType, options)!;
+        var typeInfo = options.GetTypeInfo(propertyType);
 
         // Our type resolver companion will have cached the closed type of
         // the collection type by using the callbacks provided in the generated
@@ -357,7 +354,7 @@ JsonConverter<object>, ISerializableTypeConverter
 
       if (
         valueType is { } &&
-        options.TypeInfoResolver!.GetTypeInfo(valueType, options) is { }
+        options.TryGetTypeInfo(valueType, out _)
       )
       {
         // The actual instance type is a known serializable type, so we assume
